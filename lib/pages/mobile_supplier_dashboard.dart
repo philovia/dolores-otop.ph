@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:otop_front/components/add_product_screen.dart';
+// import 'package:otop_front/components/add_product_screen.dart';
 import 'package:otop_front/components/order_list.dart';
 // import 'package:otop_front/components/supplier_list.dart';
 import 'package:otop_front/components/transactions.dart';
@@ -19,7 +19,7 @@ class MobileSupplierDashboard extends StatefulWidget {
 }
 
 class _MobileSupplierDashboardState extends State<MobileSupplierDashboard> {
-  Widget _currentWidget = AddProductScreen();
+  Widget _currentWidget = OrderList();
 
   // Instance of AuthService
   final AuthService _authService = AuthService();
@@ -130,7 +130,7 @@ class _MobileSupplierDashboardState extends State<MobileSupplierDashboard> {
                 ),
                 onTap: () {
                   setState(() {
-                    _currentWidget = AddProductScreen();
+                    // _currentWidget = AddProductScreen();
                   });
                   Navigator.of(context).pop(); // Close the drawer after selection
                 },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:otop_front/services/order_service.dart';
 
 void main() {
   runApp(MyTransaction());
@@ -9,138 +10,102 @@ class MyTransaction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final orderService = OrderService();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Center(child: Text('Transaction List')),
+          title: Row(
+            children: [
+              Center(child: Text('Order List')),
+            ],
+          ),
         ),
-        body: TransactionList(),
+        body: FutureBuilder<List<Transaction>>(
+          future: _fetchOrders(orderService),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(child: Text('No transactions found.'));
+            } else {
+              return TransactionList(transactions: snapshot.data!);
+            }
+          },
+        ),
       ),
     );
+  }
+
+  Future<List<Transaction>> _fetchOrders(OrderService orderService) async {
+    final data = await orderService.fetchOrders();
+    if (data != null) {
+      // Filter out transactions where the status is not 'pending'
+      return data
+          .map<Transaction>((json) => Transaction.fromJson(json))
+          .where((transaction) => transaction.status.toUpperCase() == 'PENDING')
+          .toList();
+    }
+    return [];
   }
 }
 
 class Transaction {
-  final String cashier;
-  final String date;
+  final String productName;
+  final String orderDate;
+  final String status;
 
-  Transaction({required this.cashier, required this.date});
-}
+  Transaction({
+    required this.productName,
+    required this.orderDate,
+    required this.status,
+  });
 
-class TransactionList extends StatefulWidget {
-  const TransactionList({super.key});
-
-  @override
-  TransactionListState createState() => TransactionListState();
-}
-
-class TransactionListState extends State<TransactionList> {
-  List<Transaction> transactions = [
-    Transaction(cashier: 'Cashier 1', date: '2024-10-01'),
-    Transaction(cashier: 'Cashier 2', date: '2024-10-02'),
-    Transaction(cashier: 'Cashier 3', date: '2024-10-03'),
-  ];
-
-  void _deleteTransaction(int index) {
-    setState(() {
-      transactions.removeAt(index);
-    });
-  }
-
-  void addTransaction(String cashier, String date) {
-    setState(() {
-      transactions.add(Transaction(cashier: cashier, date: date));
-    });
-  }
-
-  void _showAddTransactionDialog(BuildContext context) {
-    final cashierController = TextEditingController();
-    final dateController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Add Transaction'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: cashierController,
-                decoration: InputDecoration(labelText: 'Cashier Name'),
-              ),
-              TextField(
-                controller: dateController,
-                decoration: InputDecoration(labelText: 'Date (YYYY-MM-DD)'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                final cashier = cashierController.text;
-                final date = dateController.text;
-                if (cashier.isNotEmpty && date.isNotEmpty) {
-                  addTransaction(cashier, date); // Call the method to add transaction
-                  Navigator.of(context).pop();
-                }
-              },
-              child: Text('Add'),
-            ),
-          ],
-        );
-      },
+  factory Transaction.fromJson(Map<String, dynamic> json) {
+    return Transaction(
+      productName: json['product_name'] ?? 'Unknown',
+      orderDate: json['order_date'] ?? 'Unknown',
+      status: json['status'] ?? 'Unknown',
     );
   }
+}
+
+class TransactionList extends StatelessWidget {
+  final List<Transaction> transactions;
+
+  const TransactionList({super.key, required this.transactions});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double cardWidth = constraints.maxWidth < 400 ? constraints.maxWidth : 400;
+    return ListView.builder(
+      itemCount: transactions.length,
+      itemBuilder: (context, index) {
+        final transaction = transactions[index];
 
-        return Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: transactions.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: cardWidth,
-                    margin: EdgeInsets.all(8.0),
-                    child: Card(
-                      child: ListTile(
-                        title: Text(
-                          transactions[index].cashier,
-                          style: TextStyle(fontSize: cardWidth < 400 ? 14 : 16),
-                        ),
-                        subtitle: Text(
-                          transactions[index].date,
-                          style: TextStyle(fontSize: cardWidth < 400 ? 12 : 14),
-                        ),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () => _deleteTransaction(index),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+        // Determine the text style and color based on status
+        final statusStyle = TextStyle(
+          color: transaction.status.toUpperCase() == 'VERIFIED'
+              ? Colors.green
+              : Colors.red,
+          fontWeight: transaction.status.toUpperCase() == 'VERIFIED'
+              ? FontWeight.bold
+              : FontWeight.normal,
+          fontSize: 16.0,
+        );
+
+        return Card(
+          margin: EdgeInsets.all(8.0),
+          child: ListTile(
+            title: Text(transaction.productName),
+            subtitle: Text('Date: ${transaction.orderDate}'),
+            trailing: Text(
+              transaction.status,
+              style: statusStyle,
             ),
-            FloatingActionButton(
-              onPressed: () => _showAddTransactionDialog(context),
-              tooltip: 'Add Transaction',
-              child: Icon(Icons.add),
-            ),
-          ],
+          ),
         );
       },
     );

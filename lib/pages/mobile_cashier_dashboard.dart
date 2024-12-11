@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:otop_front/components/auth.dart';
-import 'package:otop_front/components/custom_container_receipts.dart';
+// import 'package:otop_front/components/custom_container_receipts.dart';
 import 'package:otop_front/components/on_sales.dart';
 // import 'package:otop_front/components/reports.dart';
 import 'package:otop_front/components/supplier_list.dart';
@@ -8,6 +7,7 @@ import 'package:otop_front/components/transactions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../components/custom_container_cashier.dart';
+import '../services/auth_service.dart';
 // import 'package:otop_app/components/admin_sales.dart';
 // import 'package:otop_app/components/admin_on_sales.dart';
 // import 'package:otop_app/components/cashier_supplies.dart';
@@ -165,12 +165,12 @@ class _MobileCashierDashboardState extends State<MobileCashierDashboard> {
                         ),
                         onTap: () {
                           setState(() {
-                            _currentWidget = CustomContainerReceipts(
-                              totalPrice: totalPrice,
-                              productCount: productCount,
-                              totalStock: totalStock,
-                              cartItems: [],
-                            );
+                            // _currentWidget = CustomContainerReceipts(
+                            //   totalPrice: totalPrice,
+                            //   productCount: productCount,
+                            //   totalStock: totalStock,
+                            //   cartItems: [],
+                            // );
                           });
                         },
                       ),

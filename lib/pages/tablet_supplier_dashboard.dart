@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:otop_front/components/add_product_screen.dart';
+// import 'package:otop_front/components/add_product_screen.dart';
 import 'package:otop_front/components/order_list.dart';
 // import 'package:otop_front/components/supplier_list.dart';
 import 'package:otop_front/components/transactions.dart';
@@ -18,7 +18,7 @@ class TabletSupplierDashboard extends StatefulWidget {
 }
 
 class _TabletSupplierDashboardState extends State<TabletSupplierDashboard> {
-  Widget _currentWidget = AddProductScreen();
+  Widget _currentWidget = OrderList();
   // Instance of AuthService
   final AuthService _authService = AuthService();
 
@@ -130,7 +130,7 @@ class _TabletSupplierDashboardState extends State<TabletSupplierDashboard> {
                         ),
                         onTap: () {
                           setState(() {
-                            _currentWidget = AddProductScreen();
+                            // _currentWidget = AddProductScreen();
                           });
                         },
                       ),

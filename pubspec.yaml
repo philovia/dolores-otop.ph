@@ -45,6 +45,11 @@ dependencies:
   google_fonts: ^6.2.1
   provider: ^6.1.2
   path: ^1.9.0
+  logging: ^1.0.2
+  fl_chart: ^0.69.0
+  jwt_decoder: ^2.0.1
+  intl: ^0.20.1
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:

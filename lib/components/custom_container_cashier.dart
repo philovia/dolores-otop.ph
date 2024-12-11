@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:otop_front/widget/pos_widget.dart';
+// import 'package:otop_front/widget/pos_widget.dart';
 
 class CustomContainerCashier extends StatelessWidget {
   const CustomContainerCashier({super.key});
@@ -44,7 +45,7 @@ class CustomContainerCashier extends StatelessWidget {
               ],
             ),
             // to put the listview inside the container
-            child: POSWidget()
+            child: POSScreen()
           ),
 
         ),

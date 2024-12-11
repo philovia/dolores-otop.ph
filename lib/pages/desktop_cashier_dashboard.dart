@@ -1,87 +1,92 @@
+// ignore_for_file: use_build_context_synchronously, duplicate_ignore
+
 import 'package:flutter/material.dart';
-import 'package:otop_front/components/custom_container_cashier.dart';
-import 'package:otop_front/components/custom_container_receipts.dart';
-import 'package:otop_front/components/on_sales.dart';
-// import 'package:otop_front/components/on_sales.dart';  
-// import 'package:otop_front/components/add_product_screen.dart';
-// import 'package:otop_front/components/reports.dart';
-import 'package:otop_front/components/supplier_list.dart';
-import 'package:otop_front/components/transactions.dart';
+// import 'package:otop_front/chart_widget/receipts_widget_display.dart';
 import 'package:otop_front/responsive/constant.dart';
-import 'package:otop_front/services/logout_services.dart';
-// import 'package:otop_front/widget/pos_widget.dart';
+// import 'package:otop_front/services/auth_service.dart';
+import 'package:otop_front/widget/pos_widget.dart';
+import 'package:otop_front/widget/product_list_otopcashier.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../services/auth_service.dart';
 
 class DesktopCashierDashboard extends StatefulWidget {
   const DesktopCashierDashboard({super.key});
 
-  @override
+  @override 
   State<DesktopCashierDashboard> createState() =>
       _DesktopCashierDashboardState();
 }
 
 class _DesktopCashierDashboardState extends State<DesktopCashierDashboard> {
-  Widget _currentWidget = SupplierList();
+  Widget _currentWidget = POSScreen();
 
-  // Instance of AuthService
   final AuthService _authService = AuthService();
+  //  bool _isSuppliersExpanded = false;
 
-   // Add these variables
-  double totalPrice = 0.0; // Initialize totalPrice
-  int totalStock = 0; // Initialize totalStock
-  List<dynamic> cartItems = []; // Initialize cartItems as needed
-  int productCount = 0; // Initialize productCount
-
-  // Function to handle logout
  Future<void> _logout() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final String? token = prefs.getString('token'); // Retrieve your token here
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
 
-  try {
-     // Call the logout method without passing context
-   // ignore: use_build_context_synchronously
-   await _authService.logout(context, token!);
-    // After the logout, check if the widget is still mounted before using context
-    if (mounted) {
-      // Show a success message or navigate to the login screen
-      Navigator.of(context).pushReplacementNamed('/login'); // Adjust based on your routing
-    }
-  } catch (e) {
-    // Check if the widget is still mounted before showing a Snackbar
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+    if (token != null) {
+      try {
+      
+        await _authService.logout(context, token);
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed('/login');
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())),
+          );
+        }
+      }
     }
   }
-}
 
-  // Function to show confirmation dialog before logout
-  void _showLogoutConfirmationDialog() {
+    void _showLogoutConfirmationDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Logout'),
-          content: Text('Are you sure you want to logout?'),
+          title: const Text('Confirm Logout'),
+          content: const Text('Are you sure you want to logout?'),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                _logout(); // Call the logout function
+                Navigator.of(context).pop();
+                _logout();
               },
-              child: Text('Yes'),
+              child: const Text('Yes'),
             ),
           ],
         );
       },
+    );
+  }
+
+Widget _buildListTile({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    bool dense = true,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: const Color.fromARGB(255, 228, 224, 224)),
+      title: Text(title, style: const TextStyle(fontSize: 13,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+      fontFamily: 'Arial',
+      )),
+      dense: dense,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      onTap: onTap,
     );
   }
 
@@ -105,7 +110,10 @@ class _DesktopCashierDashboardState extends State<DesktopCashierDashboard> {
                   ),
                   SizedBox(width: 575),
                   Text('CASHIER DASHBOARD',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white)),
                 ],
               ),
               backgroundColor: Color.fromARGB(255, 16, 136, 165),
@@ -124,67 +132,45 @@ class _DesktopCashierDashboardState extends State<DesktopCashierDashboard> {
                     children: [
                       SizedBox(height: 10),
                       ListTile(
-                        leading: Icon(Icons.shopping_bag),
                         title: Text(
-                          'Suppliers',
-                          style: TextStyle(fontSize: 13),
+                          'P O S',
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontFamily: 'Arial',),
                         ),
                         onTap: () {
                           setState(() {
-                            _currentWidget = SupplierList();
+                            _currentWidget = POSScreen();
                           });
                         },
                       ),
-                       ListTile(
+                      Divider(color: const Color.fromARGB(207, 88, 86, 86)),
+                      ListTile(
                         leading: Icon(Icons.shopping_bag),
                         title: Text(
-                          'Purchase',
-                          style: TextStyle(fontSize: 13),
+                          'Receipts',
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontFamily: 'Arial',),
                         ),
                         onTap: () {
                           setState(() {
-                            _currentWidget = CustomContainerCashier();
+                            // _currentWidget = ReceiptsDisplay(receipts: receipts)
                           });
                         },
                       ),
+                      Divider(color: const Color.fromARGB(207, 88, 86, 86)),
                       ListTile(
                         leading: Icon(Icons.add_box),
                         title: Text(
-                          'Transactions',
-                          style: TextStyle(fontSize: 13),
+                          'Products',
+                          style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontFamily: 'Arial',),
                         ),
                         onTap: () {
                           setState(() {
-                            _currentWidget = MyTransaction();
-                          });
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.shopping_bag),
-                        title: Text(
-                          'On Sales',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _currentWidget = OnSales();
-                          });
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.home),
-                        title: Text(
-                          'Receipts',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _currentWidget = CustomContainerReceipts(
-                              totalPrice: totalPrice,
-                              productCount: productCount,
-                              totalStock: totalStock,
-                              cartItems: [],
-                            );
+                            _currentWidget = ProductListScreenCashier();
                           });
                         },
                       ),
@@ -205,12 +191,11 @@ class _DesktopCashierDashboardState extends State<DesktopCashierDashboard> {
                   child: Center(
                     child: Container(
                       constraints: const BoxConstraints(maxWidth: 1700),
-                    
-                      padding: const EdgeInsets.all(10),  
+                      // padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        // borderRadius: BorderRadius.only(topLeft:Radius.circular(20.0),
-                        // topRight: Radius.circular(20.0),)
-                      ),
+                          // borderRadius: BorderRadius.only(topLeft:Radius.circular(20.0),
+                          // topRight: Radius.circular(20.0),)
+                          ),
                       child: Align(
                         alignment: Alignment.center,
                         child: _currentWidget,
