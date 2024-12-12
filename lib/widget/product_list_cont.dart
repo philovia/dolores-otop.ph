@@ -145,7 +145,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   children: [
                     SizedBox(width: 10),
                     SizedBox(
-                      width: 200,
+                      width: 600,
                       child: TextField(
                         decoration: InputDecoration(
                           hintText: 'Search for a product...',

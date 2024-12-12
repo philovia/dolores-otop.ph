@@ -62,13 +62,13 @@ class _SupplierProductListscreenState extends State<SupplierProductListscreen> {
                 Row(
                   children: [
                     SizedBox(
-                      width: 200,
+                      width: 500,
                       child: TextField(
                         decoration: InputDecoration(
                           hintText: 'Search for a product...',
                           prefixIcon: const Icon(Icons.search),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(1),
                           ),
                         ),
                       ),
@@ -77,7 +77,7 @@ class _SupplierProductListscreenState extends State<SupplierProductListscreen> {
                     ElevatedButton(
                       onPressed: _showAddProductDialog,
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue),
+                          backgroundColor: const Color.fromARGB(255, 255, 121, 26)),
                       child: const Text("+ Add new product"),
                     ),
                   ],

@@ -6,6 +6,37 @@ class ConfirmationOrders {
   static const String baseUrl =
       'http://localhost:8097'; // Replace with your backend URL
 
+
+/// Confirm an order for the authenticated supplier
+  Future<Map<String, dynamic>> confirmOrder(int Id) async {
+    final token = await _getAuthToken();
+    if (token == null) {
+      throw Exception('No authentication token found.');
+    }
+
+    final url = Uri.parse('$baseUrl/products/confirm/$Id');
+
+    // Create the headers with Authorization Bearer token and Content-Type
+    final headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body); // Successful response
+      } else {
+        throw Exception('Failed to confirm the order: ${response.body}');
+      }
+    } catch (error) {
+      throw Exception('Error confirming order: $error');
+    }
+  }
   Future<List<Map<String, dynamic>>> getSupplierOrders() async {
     final token = await _getAuthToken(); // Retrieve the auth token
     final supplierID = await _getSupplierID(); // Retrieve the supplier ID
@@ -70,34 +101,5 @@ class ConfirmationOrders {
     print('Token and supplier ID saved'); // Debugging log
   }
 
-  /// Confirm an order for the authenticated supplier
-  Future<Map<String, dynamic>> confirmOrder(int orderId) async {
-    final token = await _getAuthToken();
-    if (token == null) {
-      throw Exception('No authentication token found.');
-    }
-
-    final url = Uri.parse('$baseUrl/products/confirm/$orderId');
-
-    // Create the headers with Authorization Bearer token and Content-Type
-    final headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
-
-    try {
-      final response = await http.post(
-        url,
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-        return json.decode(response.body); // Successful response
-      } else {
-        throw Exception('Failed to confirm the order: ${response.body}');
-      }
-    } catch (error) {
-      throw Exception('Error confirming order: $error');
-    }
-  }
+  
 }

@@ -1,15 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:otop_front/components/custom_container_salessipplier.dart';
 import 'package:otop_front/components/suppliers_pending_transaction.dart';
 import 'package:otop_front/components/suppliers_verified_transaction.dart';
-// import 'package:otop_front/components/transactions.dart';
-// import 'package:otop_front/components/supplier_list.dart';
 import 'package:otop_front/responsive/constant.dart';
 import 'package:otop_front/services/auth_service.dart';
-// import 'package:otop_front/widget/cashier_add_prodlist.dart';
-// import 'package:otop_front/services/logout_services.dart';
-import 'package:otop_front/widget/custom_container.dart';
+
 import 'package:otop_front/widget/supplier_product_listscreen.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -171,7 +168,7 @@ class _DesktopSupplierDashboardState extends State<DesktopSupplierDashboard> {
                         ),
                         onTap: () {
                           setState(() {
-                            _currentWidget = CustomContainer();
+                            _currentWidget = CustomContainerSalessipplier();
                           });
                         },
                       ),
