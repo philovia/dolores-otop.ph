@@ -5,33 +5,28 @@ class Product {
   final double price;
   final int quantity;
   final String category;
-  
 
   static const List<String> validCategories = ['Food', 'Non_Food'];
 
-  Product({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.price,
-    required this.quantity,
-    required this.category
-  }){
+  Product(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.price,
+      required this.quantity,
+      required this.category}) {
     // Validate category
-    if (!validCategories.contains(category)) {
-      throw ArgumentError('Invalid category. Must be "Food" or "Non_Food".');
-    }
   }
 
   // Deserialize from JSON
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      price: json['price'],
-      quantity: json['quantity'],
-      category: json['catergory']
+      id: json['id'] as int,
+      name: json['name'] ?? 'Unknown Product', // Default value for null name
+      description: json['description'] ?? 'No description available', // Default
+      category: json['category'] ?? 'Uncategorized', // Default
+      price: (json['price'] as num?)?.toDouble() ?? 0.0, // Default to 0.0
+      quantity: json['quantity'] as int? ?? 0, // Default to 0
     );
   }
 
@@ -43,7 +38,7 @@ class Product {
       'description': description,
       'price': price,
       'quantity': quantity,
-      'catergory':category
+      'catergory': category
     };
   }
 }

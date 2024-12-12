@@ -15,7 +15,7 @@ class CartProvider extends ChangeNotifier {
         'Name: ${product.name}, '
         'Price: ${product.price}, '
         'Quantity: $quantity');
-    
+
     if (product.id == 0 || product.supplierId == 0) {
       print('Warning: Invalid product or supplier ID: '
           'Product ID: ${product.id}, Supplier ID: ${product.supplierId}');
@@ -26,7 +26,7 @@ class CartProvider extends ChangeNotifier {
       'name': product.name,
       'price': product.price,
       'quantity': quantity,
-      'supplierId': product.supplierId,  // Include supplierId
+      'supplierId': product.supplierId, // Include supplierId
     });
     notifyListeners();
   }
@@ -36,4 +36,3 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
-

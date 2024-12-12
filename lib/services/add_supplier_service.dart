@@ -7,6 +7,28 @@ class AddSupplierService {
   final String apiUrl = 'http://127.0.0.1:8097/supplier';
   final log = Logger('AddSupplierService');
 
+  // Fetch All Suppliers Method
+  Future<List<Map<String, dynamic>>?> fetchAllSuppliers() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('token');
+
+      log.info('Fetching all registered suppliers from the backend...');
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      return _handleFetchResponse(response);
+    } catch (e) {
+      log.severe('Error fetching suppliers: $e');
+      return null;
+    }
+  }
+
   // Register Supplier Method
   Future<bool> registerSupplier(Map<String, String> supplierData) async {
     try {
@@ -50,28 +72,6 @@ class AddSupplierService {
     } catch (e) {
       log.severe('Error registering user: $e');
       return false;
-    }
-  }
-
-  // Fetch All Suppliers Method
-  Future<List<Map<String, dynamic>>?> fetchAllSuppliers() async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
-
-      log.info('Fetching all registered suppliers from the backend...');
-      final response = await http.get(
-        Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      return _handleFetchResponse(response);
-    } catch (e) {
-      log.severe('Error fetching suppliers: $e');
-      return null;
     }
   }
 

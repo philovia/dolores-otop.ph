@@ -1,38 +1,34 @@
-// ignore_for_file: file_names, library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:otop_front/models/product.dart';
-import 'package:otop_front/services/supplier_product_services.dart';
 import 'package:otop_front/widget/supplier_add_product.dart';
+
+import '../services/myproducts_supplier_service.dart';
 
 class SupplierProductListscreen extends StatefulWidget {
   const SupplierProductListscreen({super.key});
 
   @override
-  _SupplierProductListscreenState createState() => _SupplierProductListscreenState();
+  _SupplierProductListscreenState createState() =>
+      _SupplierProductListscreenState();
 }
 
 class _SupplierProductListscreenState extends State<SupplierProductListscreen> {
   final Logger logger = Logger(level: Level.debug);
-
-late Future<Product> _searchedProduct;
-
+  late Future<List<Product>> _productsFuture;
   final Set<int> _selectedProductIds = {};
 
   @override
-void initState() {
-  super.initState();
-  _searchedProduct = Future.error("No search initiated");
-}
+  void initState() {
+    super.initState();
+    _fetchProducts();
+  }
 
-
-  void _fetchProductByName(String name) {
-  setState(() {
-    _searchedProduct = SupplierProductService.getProductByName(name);
-  });
-}
-
+  void _fetchProducts() {
+    setState(() {
+      _productsFuture = MyproductsSupplierService().getMyProducts();
+    });
+  }
 
   void _toggleSelection(int productId) {
     setState(() {
@@ -44,66 +40,14 @@ void initState() {
     });
   }
 
-  // Future<void> _confirmDeleteDialog() async {
-  //   if (_selectedProductIds.isEmpty) {
-  //     logger.w("No products selected for deletion.");
-  //     return;
-  //   }
-
-  //   final confirmed = await showDialog<bool>(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Text("Delete Products"),
-  //         content:
-  //             Text("Are you sure you want to delete the selected products?"),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () => Navigator.of(context).pop(false),
-  //             child: Text("Cancel"),
-  //           ),
-  //           TextButton(
-  //             onPressed: () => Navigator.of(context).pop(true),
-  //             child: Text("Confirm"),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-
-  //   if (confirmed == true) {
-  //     _deleteSelectedProducts();
-  //   }
-  // }
-
-  // Future<void> _deleteSelectedProducts() async {
-  //   for (int productId in _selectedProductIds) {
-  //     bool success = await OtopProductServiceAdmin.deleteOtopProduct(productId);
-  //     if (!success) {
-  //       logger.e("Failed to delete product with ID $productId");
-  //     }
-  //   }
-
-  //   // Clear selected IDs and refresh the product list
-  //   setState(() {
-  //     _selectedProductIds.clear();
-  //   });
-  //   _fetchProducts();
-  // }
-
   void _showAddProductDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return SupplierAddProductDialog();
+        return const SupplierAddProductDialog();
       },
     );
   }
-
-void _filterProducts(String query) {
-  _fetchProductByName(query);
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -115,57 +59,40 @@ void _filterProducts(String query) {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                DropdownButton<String>(
-                  hint: Text("Choose action"),
-                  items:
-                      <String>['Delete', 'Update Product'].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? value) {
-                    if (value == 'Delete') {
-                      // _confirmDeleteDialog();
-                    }
-                  },
-                ),
                 Row(
                   children: [
-                    SizedBox(width: 10),
                     SizedBox(
                       width: 200,
                       child: TextField(
                         decoration: InputDecoration(
                           hintText: 'Search for a product...',
-                          prefixIcon: Icon(Icons.search),
+                          prefixIcon: const Icon(Icons.search),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onChanged: _filterProducts,
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: _showAddProductDialog,
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue),
-                      child: Text("+ Add new product"),
+                      child: const Text("+ Add new product"),
                     ),
                   ],
                 ),
               ],
             ),
           ),
-          Divider(),
+          const Divider(),
 
           // Table header
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
-              children: [
-                Checkbox(value: false, onChanged: (_) {}),
+              children: const [
+                Checkbox(value: false, onChanged: null),
                 Expanded(
                     child: Text("Name",
                         style: TextStyle(fontWeight: FontWeight.bold))),
@@ -184,50 +111,64 @@ void _filterProducts(String query) {
               ],
             ),
           ),
-          Divider(),
+          const Divider(),
 
-          // Display filtered products
+          // Product list
           Expanded(
-            child:
-            FutureBuilder<Product>(
-  future: _searchedProduct,
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return Center(child: CircularProgressIndicator());
-    } else if (snapshot.hasError) {
-      logger.e("Error loading product: ${snapshot.error}");
-      return Center(
-        child: Text("Failed to load product: ${snapshot.error.toString()}"),
-      );
-    } else if (!snapshot.hasData) {
-      return Center(child: Text("Product not found"));
-    }
+            child: FutureBuilder<List<Product>>(
+              future: _productsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  logger.e("Error loading products: ${snapshot.error}");
+                  return Center(
+                    child: Text(
+                      "Failed to load products: ${snapshot.error}",
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text("No products found."));
+                }
 
-    Product product = snapshot.data!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(child: Text(product.name)),
-              Expanded(child: Text(product.description)),
-              Expanded(child: Text(product.category)),
-              Expanded(child: Text("₱${product.price}")),
-              Expanded(child: Text("${product.quantity}")),
-            ],
-          ),
-          Divider(),
-        ],
-      ),
-    );
-  },
-)
-
+                final products = snapshot.data!;
+                return ListView.builder(
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    final product = products[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _selectedProductIds.contains(product.id),
+                                onChanged: (_) {
+                                  _toggleSelection(product.id);
+                                },
+                              ),
+                              Expanded(child: Text(product.name)),
+                              Expanded(child: Text(product.description)),
+                              Expanded(child: Text(product.category)),
+                              Expanded(
+                                  child: Text("₱${product.price.toString()}")),
+                              Expanded(
+                                  child: Text(product.quantity.toString())),
+                            ],
+                          ),
+                          const Divider(),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),
     );
   }
-
 }

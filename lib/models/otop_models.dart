@@ -1,4 +1,3 @@
-
 class OtopProduct {
   final int id;
   final String name;
@@ -24,23 +23,23 @@ class OtopProduct {
     this.supplier,
   });
 
- factory OtopProduct.fromJson(Map<String, dynamic> json) {
-  print('API Response JSON: $json');  // Log the raw response
+  factory OtopProduct.fromJson(Map<String, dynamic> json) {
+    print('API Response JSON: $json'); // Log the raw response
 
-  return OtopProduct(
-    id: json['product_id'] ?? 0,
-    name: json['name'] ?? '',
-    description: json['description'] ?? '',
-    price: (json['price'] ?? 0).toDouble(),
-    quantity: json['quantity'] ?? 0,
-    category: json['category'] ?? '',
-    supplierId: json['supplier_id'] ?? 0,
-    storeName: json['store_name'] ?? '',
-    sequentialNumber: json['sequential_number'] ?? '',
-    supplier: json['supplier'] != null ? Supplier.fromJson(json['supplier']) : null,
-  );
-}
-
+    return OtopProduct(
+      id: json['product_id'] ?? 0,
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      price: (json['price'] ?? 0).toDouble(),
+      quantity: json['quantity'] ?? 0,
+      category: json['category'] ?? '',
+      supplierId: json['supplier_id'] ?? 0,
+      storeName: json['store_name'] ?? '',
+      sequentialNumber: json['sequential_number'] ?? '',
+      supplier:
+          json['supplier'] != null ? Supplier.fromJson(json['supplier']) : null,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -70,7 +69,7 @@ class OtopProduct {
 }
 
 class Supplier {
-  final int id; 
+  final int id;
   final String name;
 
   Supplier({required this.id, required this.name});

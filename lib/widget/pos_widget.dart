@@ -24,7 +24,6 @@ class POSScreen extends StatelessWidget {
             Expanded(flex: 2, child: ProductList()),
             SizedBox(width: 10),
             Expanded(flex: 1, child: CheckoutSection()),
-
           ],
         ),
       ),

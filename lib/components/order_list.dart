@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
-
 class OrderList extends StatelessWidget {
   const OrderList({super.key});
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ALL ORDERS',style: TextStyle(fontSize: 18),),
+        title: const Text(
+          'ALL ORDERS',
+          style: TextStyle(fontSize: 18),
+        ),
         centerTitle: true,
       ),
       body: Center(
@@ -41,14 +42,14 @@ class OrderList extends StatelessWidget {
                     child: Column(
                       children: [
                         _buildTableHeader(),
-                        _buildSupplierRow(context, 'Cahier Order',
-                            'Cahier', 'Food', Colors.orange),
-                        _buildSupplierRow(context, 'Cahier',
-                            'Cahier', 'Non-food', Colors.blueGrey),
-                        _buildSupplierRow(context, 'Cahier',
-                            'Cahier', 'Non-food', Colors.blueGrey),
-                        _buildSupplierRow(context, 'Cahier',
-                            'Cahier', 'Food', Colors.orange),
+                        _buildSupplierRow(context, 'Cahier Order', 'Cahier',
+                            'Food', Colors.orange),
+                        _buildSupplierRow(context, 'Cahier', 'Cahier',
+                            'Non-food', Colors.blueGrey),
+                        _buildSupplierRow(context, 'Cahier', 'Cahier',
+                            'Non-food', Colors.blueGrey),
+                        _buildSupplierRow(
+                            context, 'Cahier', 'Cahier', 'Food', Colors.orange),
                       ],
                     ),
                   ),
@@ -60,7 +61,6 @@ class OrderList extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildTableHeader() {
     return const Padding(
@@ -74,8 +74,8 @@ class OrderList extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold))),
           Expanded(
               flex: 2,
-              child:
-                  Text('Stocks', style: TextStyle(fontWeight: FontWeight.bold))),
+              child: Text('Stocks',
+                  style: TextStyle(fontWeight: FontWeight.bold))),
           Expanded(
               flex: 1,
               child: Text('Category',
@@ -86,7 +86,6 @@ class OrderList extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildSupplierRow(BuildContext context, String supplier, String file,
       String category, Color buttonColor) {
@@ -130,7 +129,6 @@ class OrderList extends StatelessWidget {
     );
   }
 
-
   // Function to show the dialog when "Order" is clicked
   void _showOrderDialog(BuildContext context, String supplier) {
     showDialog(
@@ -163,12 +161,8 @@ class OrderList extends StatelessWidget {
   }
 }
 
-
 void main() {
   runApp(const MaterialApp(
     home: OrderList(),
   ));
 }
-
-
-
