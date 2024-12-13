@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:otop_front/models/product.dart';
 import 'package:otop_front/services/supplier_product_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SupplierAddProductDialog extends StatefulWidget {
   const SupplierAddProductDialog({super.key});
 
   @override
-  _SupplierAddProductDialogState createState() => _SupplierAddProductDialogState();
+  _SupplierAddProductDialogState createState() =>
+      _SupplierAddProductDialogState();
 }
 
 class _SupplierAddProductDialogState extends State<SupplierAddProductDialog> {
@@ -23,36 +25,48 @@ class _SupplierAddProductDialogState extends State<SupplierAddProductDialog> {
   double price = 0.0;
   int quantity = 0;
 
-void _submitProduct() async {
-  if (_formKey.currentState!.validate()) {
+  void _submitProduct() async {
+    if (_formKey.currentState!.validate()) {
+      Product newProduct = Product(
+        id: 0,
+        name: productName,
+        description: description,
+        category: category,
+        price: price,
+        quantity: quantity,
+      );
 
-    Product newProduct = Product(
-      id: 0,
-      name: productName,
-      description: description,
-      category: category,
-      price: price,
-      quantity: quantity,
-    );
+      // Fetch the token from secure storage
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
 
-    bool success = await SupplierProductService.createProduct(newProduct);
-
-
-    if (mounted) {
-      if (success) {
-        Navigator.of(context).pop();
+      if (token == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Product created successfully!')),
+          SnackBar(
+              content:
+                  Text('Authentication token not found! Please login again.')),
         );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to create product. Please try again.')),
-        );
+        return;
+      }
+
+      // Call the service with the token
+      bool success = await SupplierProductService.addProduct(newProduct, token);
+
+      if (mounted) {
+        if (success) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Product created successfully!')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('Failed to create product. Please try again.')),
+          );
+        }
       }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +74,7 @@ void _submitProduct() async {
       title: Text('Add New Product'),
       content: SizedBox(
         // Set the width and height for the dialog content
-        width: 400,  // Adjust width here
+        width: 400, // Adjust width here
         height: 300, // Adjust height here
         child: Form(
           key: _formKey,
@@ -122,7 +136,6 @@ void _submitProduct() async {
                     return null;
                   },
                 ),
-
               ],
             ),
           ),

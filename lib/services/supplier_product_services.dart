@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:otop_front/models/product.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:your_project_name/models/product_model.dart';
 
 class SupplierProductService {
+  static final Logger logger = Logger(level: Level.debug);
   static const String baseUrl = 'http://127.0.0.1:8097/products';
 
- // Get product by name
+  // Get product by name
   static Future<Product> getProductByName(String name) async {
     final url = Uri.parse('$baseUrl${Uri.encodeComponent(name)}');
     final response = await http.get(url);
@@ -29,16 +32,39 @@ class SupplierProductService {
     return response.statusCode == 200;
   }
 
-  // Create a new product
-  static Future<bool> createProduct(Product product) async {
-    final url = Uri.parse('$baseUrl/');
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: json.encode(product.toJson()),
-    );
+  static Future<bool> addProduct(Product product, String token) async {
+    const String apiUrl =
+        'http://127.0.0.1:8097/products'; // Replace with your API URL
 
-    return response.statusCode == 201;
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'name': product.name,
+          'description': product.description,
+          'category': product.category,
+          'price': product.price,
+          'quantity': product.quantity,
+        }),
+      );
+
+      logger.d('Response Code: ${response.statusCode}');
+      logger.d('Response Body: ${response.body}');
+
+      if (response.statusCode == 201) {
+        return true;
+      } else {
+        logger.e('Failed to create product: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      logger.e('Error occurred while adding product: $e');
+      return false;
+    }
   }
 
   // Get all products
@@ -71,7 +97,8 @@ class SupplierProductService {
   }
 
   // Update a product
-  static Future<bool> updateProduct(int id, Product product, String token) async {
+  static Future<bool> updateProduct(
+      int id, Product product, String token) async {
     final url = Uri.parse('$baseUrl/$id');
     final response = await http.put(
       url,

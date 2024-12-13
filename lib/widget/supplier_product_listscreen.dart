@@ -77,7 +77,8 @@ class _SupplierProductListscreenState extends State<SupplierProductListscreen> {
                     ElevatedButton(
                       onPressed: _showAddProductDialog,
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 255, 121, 26)),
+                          backgroundColor:
+                              const Color.fromARGB(255, 255, 121, 26)),
                       child: const Text("+ Add new product"),
                     ),
                   ],
