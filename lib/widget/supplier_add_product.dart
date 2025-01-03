@@ -34,6 +34,7 @@ class _SupplierAddProductDialogState extends State<SupplierAddProductDialog> {
         category: category,
         price: price,
         quantity: quantity,
+        supplierId: 0,
       );
 
       // Fetch the token from secure storage

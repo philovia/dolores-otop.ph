@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:otop_front/models/product.dart';
+import 'package:otop_front/services/supplier_product_services.dart';
 import 'package:otop_front/widget/supplier_add_product.dart';
-
-import '../services/myproducts_supplier_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SupplierProductListscreen extends StatefulWidget {
   const SupplierProductListscreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SupplierProductListscreenState createState() =>
       _SupplierProductListscreenState();
 }
@@ -24,10 +25,19 @@ class _SupplierProductListscreenState extends State<SupplierProductListscreen> {
     _fetchProducts();
   }
 
-  void _fetchProducts() {
-    setState(() {
-      _productsFuture = MyproductsSupplierService().getMyProducts();
-    });
+  void _fetchProducts() async {
+    final prefs = await SharedPreferences.getInstance();
+    final supplierId = prefs.getInt('supplier_id');
+
+    if (supplierId != null) {
+      setState(() {
+        _productsFuture =
+            SupplierProductService.getProductsBySupplierId(supplierId);
+      });
+    } else {
+      logger.e('No supplier ID found');
+      // Handle the case where the supplier ID is not found.
+    }
   }
 
   void _toggleSelection(int productId) {

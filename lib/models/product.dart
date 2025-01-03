@@ -5,6 +5,7 @@ class Product {
   final double price;
   final int quantity;
   final String category;
+  final int supplierId;
 
   static const List<String> validCategories = ['Food', 'Non_Food'];
 
@@ -14,7 +15,8 @@ class Product {
       required this.description,
       required this.price,
       required this.quantity,
-      required this.category}) {
+      required this.category,
+      required this.supplierId}) {
     // Validate category
   }
 
@@ -27,6 +29,7 @@ class Product {
       category: json['category'] ?? 'Uncategorized', // Default
       price: (json['price'] as num?)?.toDouble() ?? 0.0, // Default to 0.0
       quantity: json['quantity'] as int? ?? 0, // Default to 0
+      supplierId: json['supplier_id'] as int,
     );
   }
 
@@ -38,7 +41,8 @@ class Product {
       'description': description,
       'price': price,
       'quantity': quantity,
-      'catergory': category
+      'catergory': category,
+      'supplier_id': supplierId
     };
   }
 }

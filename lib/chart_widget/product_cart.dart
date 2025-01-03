@@ -102,7 +102,6 @@ class _ProductListState extends State<ProductList> {
   }
 }
 
-
 class ProductCard extends StatefulWidget {
   final OtopProduct product;
   final void Function(int quantity) onAdd;
@@ -225,4 +224,3 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 }
-

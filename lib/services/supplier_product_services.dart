@@ -2,22 +2,53 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:otop_front/models/product.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:your_project_name/models/product_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SupplierProductService {
   static final Logger logger = Logger(level: Level.debug);
   static const String baseUrl = 'http://127.0.0.1:8097/products';
 
-  // Get product by name
-  static Future<Product> getProductByName(String name) async {
-    final url = Uri.parse('$baseUrl${Uri.encodeComponent(name)}');
-    final response = await http.get(url);
+  // Get product by supplier ID
+  static Future<List<Product>> getProductsBySupplierId(int supplierId) async {
+    try {
+      // Retrieve the token from shared preferences or wherever it's stored
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+      final supplierId = prefs.getInt('supplier_id');
 
-    if (response.statusCode == 200) {
-      return Product.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('Product not found');
+      if (token == null || token.isEmpty) {
+        throw Exception('No authentication token found');
+      }
+
+      if (supplierId == null) {
+        throw Exception('No supplier ID found');
+      }
+
+      // Prepare the URL for the request
+      final url = Uri.parse('$baseUrl/$supplierId');
+
+      // Prepare the headers with the Authorization token
+      final headers = {
+        'Authorization': 'Bearer $token',
+      };
+
+      // Make the HTTP request to the server
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        // If the request is successful, parse the products data
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((json) => Product.fromJson(json)).toList();
+      } else if (response.statusCode == 404) {
+        throw Exception('No products found for this supplier');
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthorized access: Token mismatch');
+      } else {
+        throw Exception('Failed to fetch products');
+      }
+    } catch (e) {
+      logger.e('Error fetching products: $e');
+      throw Exception('Failed to fetch products');
     }
   }
 

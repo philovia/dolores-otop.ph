@@ -90,103 +90,105 @@ class _CheckoutSectionState extends State<CheckoutSection> {
     final cartProvider = Provider.of<CartProvider>(context);
 
     return Container(
-  padding: const EdgeInsets.all(16),
-  decoration: BoxDecoration(
-    color: const Color.fromARGB(255, 252, 222, 192), // Background color
-    boxShadow: [
-      BoxShadow(
-        color: Colors.grey.withOpacity(0.5), // Shadow color with opacity
-        spreadRadius: 2, // How much the shadow spreads
-        blurRadius: 5, // How much the shadow blurs
-        offset: Offset(0, 3), // Position of the shadow (x, y)
-      ),
-    ],
-    borderRadius: BorderRadius.circular(8), // Optional: Rounded corners
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        'Bill',
-        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-      ),
-      Expanded(
-        child: ListView.builder(
-          itemCount: cartProvider.cartItems.length,
-          itemBuilder: (context, index) {
-            final item = cartProvider.cartItems[index];
-
-            return Text(
-              '${item['name']} (x${item['quantity']}): ₱${(item['price'] * item['quantity']).toStringAsFixed(2)}',
-              style: TextStyle(fontSize: 16),
-            );
-          },
-        ),
-      ),
-      Divider(),
-      Text(
-        'Total: ₱${cartProvider.total.toStringAsFixed(2)}',
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-      ),
-      SizedBox(height: 10),
-      Row(
-        children: [
-          Text(
-            'Received: ₱',
-            style: TextStyle(fontSize: 18),
-          ),
-          SizedBox(width: 10),
-          Expanded(
-            child: TextField(
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                received = double.tryParse(value) ?? 0.00;
-                calculateChange(cartProvider.total);
-              },
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: '0.00',
-              ),
-            ),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 252, 222, 192), // Background color
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5), // Shadow color with opacity
+            spreadRadius: 2, // How much the shadow spreads
+            blurRadius: 5, // How much the shadow blurs
+            offset: Offset(0, 3), // Position of the shadow (x, y)
           ),
         ],
+        borderRadius: BorderRadius.circular(8), // Optional: Rounded corners
       ),
-      SizedBox(height: 10),
-      Wrap(
-        spacing: 8,
-        children: [50, 100, 200, 500, 1000].map((amount) {
-          return ElevatedButton(
-            onPressed: () {
-              setState(() {
-                received += amount;
-                calculateChange(cartProvider.total);
-              });
-            },
-            child: Text('₱$amount'),
-          );
-        }).toList(),
-      ),
-      SizedBox(height: 10),
-      Text(
-        'Change: ₱${change.toStringAsFixed(2)}',
-        style: TextStyle(fontSize: 18),
-      ),
-      SizedBox(height: 20),
-      ElevatedButton(
-  onPressed: received >= cartProvider.total ? completeCheckout : null,
-  style: ElevatedButton.styleFrom(
-    backgroundColor: received >= cartProvider.total ? Colors.green : Colors.grey, // Button color
-    foregroundColor: Colors.white, // Text color
-    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Button padding
-    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Text styling
-  ),
-  child: const Text('Complete Checkout'),
-),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Bill',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: cartProvider.cartItems.length,
+              itemBuilder: (context, index) {
+                final item = cartProvider.cartItems[index];
 
-      SizedBox(height: 30),
-    ],
-  ),
-);
-
+                return Text(
+                  '${item['name']} (x${item['quantity']}): ₱${(item['price'] * item['quantity']).toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 16),
+                );
+              },
+            ),
+          ),
+          Divider(),
+          Text(
+            'Total: ₱${cartProvider.total.toStringAsFixed(2)}',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Text(
+                'Received: ₱',
+                style: TextStyle(fontSize: 18),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    received = double.tryParse(value) ?? 0.00;
+                    calculateChange(cartProvider.total);
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: '0.00',
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            children: [50, 100, 200, 500, 1000].map((amount) {
+              return ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    received += amount;
+                    calculateChange(cartProvider.total);
+                  });
+                },
+                child: Text('₱$amount'),
+              );
+            }).toList(),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'Change: ₱${change.toStringAsFixed(2)}',
+            style: TextStyle(fontSize: 18),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: received >= cartProvider.total ? completeCheckout : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: received >= cartProvider.total
+                  ? Colors.green
+                  : Colors.grey, // Button color
+              foregroundColor: Colors.white, // Text color
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 20, vertical: 12), // Button padding
+              textStyle: const TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.bold), // Text styling
+            ),
+            child: const Text('Complete Checkout'),
+          ),
+          SizedBox(height: 30),
+        ],
+      ),
+    );
   }
 }
