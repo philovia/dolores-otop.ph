@@ -4,7 +4,8 @@ import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SupplierPurchaseCountService {
-  final String apiUrl = 'http://127.0.0.1:8097/suppliers/all_purchases'; // Your backend API URL
+  final String apiUrl =
+      'https://cyan-dust-star.glitch.me/suppliers/all_purchases'; // Your backend API URL
   final log = Logger('SupplierPurchaseCountService');
 
   // Fetch Supplier Purchase Counts Method
@@ -34,7 +35,9 @@ class SupplierPurchaseCountService {
     if (response.statusCode == 200) {
       log.info('Supplier purchase counts fetched successfully.');
       List<dynamic> data = jsonDecode(response.body);
-      return data.map((e) => SupplierPurchaseCount.fromJson(e)).toList(); // Map to the model
+      return data
+          .map((e) => SupplierPurchaseCount.fromJson(e))
+          .toList(); // Map to the model
     } else {
       final responseBody = jsonDecode(response.body);
       log.warning(
@@ -47,7 +50,6 @@ class SupplierPurchaseCountService {
 class SupplierPurchaseCount {
   final String storeName;
   final int purchaseCount;
-
 
   SupplierPurchaseCount({
     required this.storeName,

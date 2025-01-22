@@ -3,9 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:otop_front/services/add_supplier_service.dart';
 import 'package:otop_front/widget/order_cardDialog.dart';
-// import 'package:otop_front/services/product_services.dart';
 
-// this is for all the suppliers added by the admin
 class SupplierListWidget extends StatefulWidget {
   const SupplierListWidget({super.key});
 
@@ -16,69 +14,64 @@ class SupplierListWidget extends StatefulWidget {
 class _SupplierListWidgetState extends State<SupplierListWidget> {
   final AddSupplierService _supplierService = AddSupplierService();
   final TextEditingController _searchController = TextEditingController();
-  //  final ProductService _productService = ProductService();
   String _searchQuery = '';
 
-void _showSupplierDetails(Map<String, dynamic> supplier) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text(
-          'Supplier Details',
-          style: TextStyle(fontSize: 20),  // Title text size adjustment
-        ),
-        content: SizedBox(
-          width: 300,  // Adjust the width of the container
-          height: 150, // Adjust the height of the container
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Supplier Name: ${supplier['store_name'] ?? 'N/A'}',
-                style: TextStyle(fontSize: 16), // Adjust the font size here
-              ),
-              SizedBox(height: 8), // Add space between lines
-              Text(
-                'Email: ${supplier['email'] ?? 'N/A'}',
-                style: TextStyle(fontSize: 16), // Adjust the font size here
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Phone Number: ${supplier['phone_number'] ?? 'N/A'}',
-                style: TextStyle(fontSize: 16), // Adjust the font size here
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Address: ${supplier['address'] ?? 'N/A'}',
-                style: TextStyle(fontSize: 16), // Adjust the font size here
-              ),
-            ],
+  void _showSupplierDetails(Map<String, dynamic> supplier) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Supplier Details',
+            style: TextStyle(fontSize: 20),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Close'),
+          content: SizedBox(
+            width: 300,
+            height: 150,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Supplier Name: ${supplier['store_name'] ?? 'N/A'}',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Email: ${supplier['email'] ?? 'N/A'}',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Phone Number: ${supplier['phone_number'] ?? 'N/A'}',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Address: ${supplier['address'] ?? 'N/A'}',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
           ),
-        ],
-      );
-    },
-  );
-}
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-
-
-  // Function to show the order dialog
   void _showOrderDialog(Map<String, dynamic> supplier) {
     showDialog(
       context: context,
       builder: (context) {
-        return OrderDialogWidget(
-            supplier: supplier); // Ensure this key exists);
+        return OrderDialogWidget(supplier: supplier);
       },
     );
   }
@@ -104,20 +97,16 @@ void _showSupplierDetails(Map<String, dynamic> supplier) {
     return Scaffold(
       body: Column(
         children: [
-          // Search Field Container (aligned to the right)
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
             child: Row(
               children: [
-                // Align search field to the right
                 Expanded(
-                  child:
-                      Container(), // Empty container to take space on the left
+                  child: Container(),
                 ),
-                // Search Field (not expanded, aligned to the right)
                 SizedBox(
-                  width: 250, // You can adjust the width as per requirement
+                  width: 400,
                   child: TextField(
                     controller: _searchController,
                     decoration: const InputDecoration(
@@ -130,7 +119,6 @@ void _showSupplierDetails(Map<String, dynamic> supplier) {
               ],
             ),
           ),
-          // Table Header with Store Name and Supplier Details
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             color: Colors.grey[300],
@@ -191,46 +179,51 @@ void _showSupplierDetails(Map<String, dynamic> supplier) {
                     itemCount: suppliers.length,
                     separatorBuilder: (context, index) => const Divider(
                       thickness: 0.5,
-                      height: 8.0,
+                      height: 2.0,
                     ),
                     itemBuilder: (context, index) {
                       final supplier = suppliers[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                supplier['store_name'] ?? 'Unknown Supplier',
-                                style: const TextStyle(
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 47, 47, 49),
+                      final isHighlighted = index % 2 == 0;
+                      return Container(
+                        color: isHighlighted ? Colors.grey[200] : Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  supplier['store_name'] ?? 'Unknown Supplier',
+                                  style: const TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 47, 47, 49),
+                                  ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        _showSupplierDetails(supplier),
-                                    child: const Text('See Details',
-                                        style: TextStyle(fontSize: 12.0)),
-                                  ),
-                                  TextButton(
-                                    onPressed: () => _showOrderDialog(supplier),
-                                    child: const Text('See Products',
-                                        style: TextStyle(fontSize: 12.0)),
-                                  ),
-                                ],
+                              Expanded(
+                                flex: 1,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          _showSupplierDetails(supplier),
+                                      child: const Text('See Details',
+                                          style: TextStyle(fontSize: 12.0)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          _showOrderDialog(supplier),
+                                      child: const Text('See Products',
+                                          style: TextStyle(fontSize: 12.0)),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },

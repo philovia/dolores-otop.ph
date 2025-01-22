@@ -1,9 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, duplicate_ignore
 
 import 'package:flutter/material.dart';
-// import 'package:otop_front/chart_widget/receipts_widget_display.dart';
 import 'package:otop_front/responsive/constant.dart';
-// import 'package:otop_front/services/auth_service.dart';
 import 'package:otop_front/widget/pos_widget.dart';
 import 'package:otop_front/widget/product_list_otopcashier.dart';
 import 'dart:async';
@@ -14,24 +12,23 @@ import '../services/auth_service.dart';
 class DesktopCashierDashboard extends StatefulWidget {
   const DesktopCashierDashboard({super.key});
 
-  @override 
+  @override
   State<DesktopCashierDashboard> createState() =>
       _DesktopCashierDashboardState();
 }
 
 class _DesktopCashierDashboardState extends State<DesktopCashierDashboard> {
-  Widget _currentWidget = POSScreen();
+  Widget _currentWidget = ProductCheckoutWidget();
 
   final AuthService _authService = AuthService();
   //  bool _isSuppliersExpanded = false;
 
- Future<void> _logout() async {
+  Future<void> _logout() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
 
     if (token != null) {
       try {
-      
         await _authService.logout(context, token);
         if (mounted) {
           Navigator.of(context).pushReplacementNamed('/login');
@@ -46,7 +43,7 @@ class _DesktopCashierDashboardState extends State<DesktopCashierDashboard> {
     }
   }
 
-    void _showLogoutConfirmationDialog() {
+  void _showLogoutConfirmationDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -71,7 +68,7 @@ class _DesktopCashierDashboardState extends State<DesktopCashierDashboard> {
     );
   }
 
-Widget _buildListTile({
+  Widget _buildListTile({
     required IconData icon,
     required String title,
     required VoidCallback onTap,
@@ -79,11 +76,13 @@ Widget _buildListTile({
   }) {
     return ListTile(
       leading: Icon(icon, color: const Color.fromARGB(255, 228, 224, 224)),
-      title: Text(title, style: const TextStyle(fontSize: 13,
-      fontWeight: FontWeight.bold,
-      color: Colors.white,
-      fontFamily: 'Arial',
-      )),
+      title: Text(title,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'Arial',
+          )),
       dense: dense,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       onTap: onTap,
@@ -134,13 +133,16 @@ Widget _buildListTile({
                       ListTile(
                         title: Text(
                           'P O S',
-                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontFamily: 'Arial',),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontFamily: 'Arial',
+                          ),
                         ),
                         onTap: () {
                           setState(() {
-                            _currentWidget = POSScreen();
+                            _currentWidget = ProductCheckoutWidget();
                           });
                         },
                       ),
@@ -149,9 +151,12 @@ Widget _buildListTile({
                         leading: Icon(Icons.shopping_bag),
                         title: Text(
                           'Receipts',
-                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontFamily: 'Arial',),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontFamily: 'Arial',
+                          ),
                         ),
                         onTap: () {
                           setState(() {
@@ -164,9 +169,12 @@ Widget _buildListTile({
                         leading: Icon(Icons.add_box),
                         title: Text(
                           'Products',
-                          style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontFamily: 'Arial',),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontFamily: 'Arial',
+                          ),
                         ),
                         onTap: () {
                           setState(() {

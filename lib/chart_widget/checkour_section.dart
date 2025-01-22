@@ -1,8 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-// import 'package:otop_front/models/sold_items_model.dart';
-// import 'package:otop_front/services/otop_product_service.dart';
 import 'package:provider/provider.dart';
 import 'package:otop_front/providers/cart_provider.dart';
 import 'dart:convert';

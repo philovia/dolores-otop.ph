@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OtopProductServices {
-  final String _baseUrl = 'http://127.0.0.1:8097/api/otop';
+  final String _baseUrl = 'https://cyan-dust-star.glitch.me/api/otop';
 
   // Fetch total number of unique products
   Future<int> getOtopTotalProducts() async {
@@ -74,8 +74,10 @@ class OtopProductServices {
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
       return data
-          .map((item) =>
-              {"store_name": item["store_name"], "product_count": item["product_count"]})
+          .map((item) => {
+                "store_name": item["store_name"],
+                "product_count": item["product_count"]
+              })
           .toList();
     } else {
       throw Exception('Failed to count suppliers by store name');

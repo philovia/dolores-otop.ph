@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 class OrderService {
-  final String baseUrl = 'http://localhost:8097/order';
+  final String baseUrl = 'https://cyan-dust-star.glitch.me/order';
   final Logger _logger = Logger();
 
   Future<http.Response?> createOrder({
@@ -11,8 +11,6 @@ class OrderService {
     required int quantity,
     required int supplierId,
   }) async {
-
-    
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/'),

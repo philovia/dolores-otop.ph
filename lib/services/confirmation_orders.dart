@@ -4,10 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfirmationOrders {
   static const String baseUrl =
-      'http://localhost:8097'; // Replace with your backend URL
+      'https://cyan-dust-star.glitch.me'; // Replace with your backend URL
 
-
-/// Confirm an order for the authenticated supplier
+  /// Confirm an order for the authenticated supplier
   Future<Map<String, dynamic>> confirmOrder(int Id) async {
     final token = await _getAuthToken();
     if (token == null) {
@@ -37,6 +36,7 @@ class ConfirmationOrders {
       throw Exception('Error confirming order: $error');
     }
   }
+
   Future<List<Map<String, dynamic>>> getSupplierOrders() async {
     final token = await _getAuthToken(); // Retrieve the auth token
     final supplierID = await _getSupplierID(); // Retrieve the supplier ID
@@ -100,6 +100,4 @@ class ConfirmationOrders {
     await prefs.setInt('supplier_id', supplierId);
     print('Token and supplier ID saved'); // Debugging log
   }
-
-  
 }

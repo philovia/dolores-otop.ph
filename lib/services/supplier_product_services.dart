@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SupplierProductService {
   static final Logger logger = Logger(level: Level.debug);
-  static const String baseUrl = 'http://127.0.0.1:8097/products';
+  static const String baseUrl = 'https://cyan-dust-star.glitch.me/products';
 
   // Get product by supplier ID
   static Future<List<Product>> getProductsBySupplierId(int supplierId) async {

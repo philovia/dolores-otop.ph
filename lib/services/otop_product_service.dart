@@ -4,9 +4,21 @@ import 'package:otop_front/models/otop_models.dart';
 import 'package:otop_front/models/sold_items_model.dart';
 
 class OtopProductServiceAdmin {
-  static const String baseUrl = 'http://127.0.0.1:8097/otop';
-  static const String otopUrl = 'http://127.0.0.1:8097/api/otop';
+  static const String baseUrl = 'https://cyan-dust-star.glitch.me/otop';
+  static const String otopUrl = 'https://cyan-dust-star.glitch.me/api/otop';
 
+  static Future<void> checkout(Map<String, dynamic> data) async {
+    final url = Uri.parse('$otopUrl/POS');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(data),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Checkout failed: ${response.body}');
+    }
+  }
 
   // get all products
   static Future<List<OtopProduct>> getOtopProducts() async {
@@ -20,7 +32,7 @@ class OtopProductServiceAdmin {
       throw Exception('Failed to load products');
     }
   }
-  
+
   // Get all sold items
   static Future<List<SoldItems>> getAllSoldItems() async {
     final url = Uri.parse('$otopUrl/solds_products');
@@ -35,7 +47,8 @@ class OtopProductServiceAdmin {
   }
 
   // Get sold items by supplier ID
-  static Future<List<SoldItems>> getSoldItemsBySupplierId(int supplierId) async {
+  static Future<List<SoldItems>> getSoldItemsBySupplierId(
+      int supplierId) async {
     final url = Uri.parse('$otopUrl/solds_products/$supplierId');
     final response = await http.get(url);
 
@@ -78,7 +91,6 @@ class OtopProductServiceAdmin {
 
     return response.statusCode == 201;
   }
-
 
 // get products by id
   static Future<OtopProduct> getOtopProductById(int id) async {

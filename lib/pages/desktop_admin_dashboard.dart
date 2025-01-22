@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:otop_front/components/custom_con_OtpProduct_list.dart';
-// import 'package:otop_front/components/custom_container_addsup.dart';
 import 'package:otop_front/components/custom_container_sales.dart';
 import 'package:otop_front/components/custom_container_suppproduct_page.dart';
-// import 'package:otop_front/components/custom_container_supselect.dart';
-// import 'package:otop_front/components/custom_con_OtpProducts_list.dart';
 import 'package:otop_front/components/custome_container_suppselect.dart';
 import 'package:otop_front/components/transactions.dart';
 import 'package:otop_front/components/verified_transactions.dart';
 import 'package:otop_front/responsive/constant.dart';
 import 'package:otop_front/services/auth_service.dart';
-// import 'package:otop_front/services/logout_services.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -84,11 +80,13 @@ class _DesktopAdminDashboardState extends State<DesktopAdminDashboard> {
   }) {
     return ListTile(
       leading: Icon(icon, color: const Color.fromARGB(255, 228, 224, 224)),
-      title: Text(title, style: const TextStyle(fontSize: 13,
-      fontWeight: FontWeight.bold,
-      color: Colors.white,
-      fontFamily: 'Arial',
-      )),
+      title: Text(title,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'Arial',
+          )),
       dense: dense,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       onTap: onTap,
@@ -114,7 +112,7 @@ class _DesktopAdminDashboardState extends State<DesktopAdminDashboard> {
                         color: Colors.white)),
               ],
             ),
-            backgroundColor: const  Color.fromARGB(255, 6, 122, 151),
+            backgroundColor: const Color.fromARGB(255, 6, 122, 151),
           ),
           Expanded(
             child: Row(
@@ -130,9 +128,10 @@ class _DesktopAdminDashboardState extends State<DesktopAdminDashboard> {
                         leading: const Icon(Icons.shopping_bag,
                             color: Color.fromARGB(255, 228, 224, 224)),
                         title: const Text('Manage Suppliers',
-                            style: TextStyle(fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white)),
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
                         dense: true,
                         trailing: Icon(
                           _isSuppliersExpanded
@@ -197,27 +196,30 @@ class _DesktopAdminDashboardState extends State<DesktopAdminDashboard> {
                       ),
                       const Divider(color: Color.fromARGB(207, 88, 86, 86)),
                       ListTile(
-                        leading: Icon(Icons.shopping_bag_rounded,
-                        color: Color.fromARGB(255, 228, 224, 224),
+                        leading: Icon(
+                          Icons.shopping_bag_rounded,
+                          color: Color.fromARGB(255, 228, 224, 224),
                         ),
                         title: Text('Sales',
                             style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white)),
-                                 dense: true,
+                        dense: true,
                         trailing: Icon(
-                          _isSalesExpanded ? Icons.expand_less : Icons.expand_more,
+                          _isSalesExpanded
+                              ? Icons.expand_less
+                              : Icons.expand_more,
                           color: const Color.fromARGB(255, 228, 224, 224),
                         ),
                         onTap: () => setState(() {
                           _isSalesExpanded = !_isSalesExpanded;
                         }),
                       ),
-                       if (_isSalesExpanded)
+                      if (_isSalesExpanded)
                         Column(
                           children: [
-                             _buildListTile(
+                            _buildListTile(
                               icon: Icons.shopping_bag_rounded,
                               title: '   Sales Overview',
                               onTap: () {

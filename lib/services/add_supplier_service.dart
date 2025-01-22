@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddSupplierService {
-  final String apiUrl = 'http://127.0.0.1:8097/supplier';
+  final String apiUrl = 'https://cyan-dust-star.glitch.me/supplier';
   final log = Logger('AddSupplierService');
 
   // Fetch All Suppliers Method

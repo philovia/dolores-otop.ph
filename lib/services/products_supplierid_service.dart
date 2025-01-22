@@ -6,7 +6,9 @@ class ProductService {
   final String baseUrl;
 
   // Initialize with your backend's base URL
-  ProductService({this.baseUrl = 'http://localhost:8097/api/products/supplier'});
+  ProductService(
+      {this.baseUrl =
+          'https://cyan-dust-star.glitch.me/api/products/supplier'});
 
   // Fetch products by supplier ID
   Future<List<SupplierProduct>> getProductsBySupplier(int supplierId) async {

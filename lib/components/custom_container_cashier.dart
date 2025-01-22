@@ -6,27 +6,28 @@ class CustomContainerCashier extends StatelessWidget {
   const CustomContainerCashier({super.key});
 
   @override
-    Widget build(BuildContext context) {
-      // get the width of the screen
-      double screenWidth = MediaQuery.of(context).size.width;
+  Widget build(BuildContext context) {
+    // get the width of the screen
+    double screenWidth = MediaQuery.of(context).size.width;
 
-      // set the container width 
-      double containerWidth;
-      if (screenWidth <= 500){
-        containerWidth = screenWidth *0.9;  // magagamit yung .9 percent ng screen 
-      }else if (screenWidth > 500 && screenWidth <= 1100){
-        containerWidth = 500; // magagmmit yug max widt ng screen na 500
-      } else {
-        containerWidth = 1100 ; // use a larger screen more than the 1100 screen size
-      }
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 197, 192, 192),
-          title:  
-              Center(child: Text('Purchase Product', style: TextStyle(fontSize: 18))),
-        ),
-        body: Center(
-          child: Container(
+    // set the container width
+    double containerWidth;
+    if (screenWidth <= 500) {
+      containerWidth = screenWidth * 0.9; // magagamit yung .9 percent ng screen
+    } else if (screenWidth > 500 && screenWidth <= 1100) {
+      containerWidth = 500; // magagmmit yug max widt ng screen na 500
+    } else {
+      containerWidth =
+          1100; // use a larger screen more than the 1100 screen size
+    }
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 197, 192, 192),
+        title: Center(
+            child: Text('Purchase Product', style: TextStyle(fontSize: 18))),
+      ),
+      body: Center(
+        child: Container(
             width: containerWidth,
             height: 550,
             // padding: EdgeInsets.all(1.0),
@@ -45,17 +46,14 @@ class CustomContainerCashier extends StatelessWidget {
               ],
             ),
             // to put the listview inside the container
-            child: POSScreen()
-          ),
-
-        ),
-      );
-    }
-  }
-
-  void main (){
-    runApp(MaterialApp(
-      home:CustomContainerCashier()
-    ),
+            child: ProductCheckoutWidget()),
+      ),
     );
   }
+}
+
+void main() {
+  runApp(
+    MaterialApp(home: CustomContainerCashier()),
+  );
+}
