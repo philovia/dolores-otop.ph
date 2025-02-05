@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 class OrderService {
-  final String baseUrl = 'https://cyan-dust-star.glitch.me/order';
+  final String baseUrl = 'http://127.0.0.1:8097/order';
   final Logger _logger = Logger();
 
   Future<http.Response?> createOrder({

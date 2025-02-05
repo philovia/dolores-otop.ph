@@ -16,7 +16,7 @@ class ResponsiveDashboardCashier extends StatelessWidget {
     return LayoutBuilder(
       // ignore: non_constant_identifier_names
       builder: (context, Constraints) {
-        if (Constraints.maxWidth < 500) {
+        if (Constraints.maxWidth < 400) {
           return mobileCashierDashboard;
         } else if (Constraints.maxWidth < 1100) {
           return tabletCashierDashboard;

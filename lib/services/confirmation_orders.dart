@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfirmationOrders {
   static const String baseUrl =
-      'https://cyan-dust-star.glitch.me'; // Replace with your backend URL
+      'http://127.0.0.1:8097'; // Replace with your backend URL
 
   /// Confirm an order for the authenticated supplier
   Future<Map<String, dynamic>> confirmOrder(int Id) async {

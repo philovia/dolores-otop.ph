@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   static const String baseUrl =
-      'https://cyan-dust-star.glitch.me/api'; // Update this with your backend URL
+      'http://127.0.0.1:8097/api'; // Update this with your backend URL
 
   // Unified login function for admin, cashier, and supplier
   Future<Map<String, dynamic>> login(String email, String password) async {

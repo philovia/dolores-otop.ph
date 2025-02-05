@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SupplierPurchaseCountService {
   final String apiUrl =
-      'https://cyan-dust-star.glitch.me/suppliers/all_purchases'; // Your backend API URL
+      'http://127.0.0.1:8097/suppliers/all_purchases'; // Your backend API URL
   final log = Logger('SupplierPurchaseCountService');
 
   // Fetch Supplier Purchase Counts Method

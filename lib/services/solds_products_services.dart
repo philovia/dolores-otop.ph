@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<void> recordSoldItems(int productId, int quantitySold) async {
-  const String apiUrl = 'https://cyan-dust-star.glitch.me/api/otop/sold_items';
+  const String apiUrl = 'http://127.0.0.1:8097/api/otop/sold_items';
 
   try {
     final response = await http.post(

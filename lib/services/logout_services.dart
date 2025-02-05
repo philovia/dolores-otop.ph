@@ -7,7 +7,7 @@ class AuthService {
   Future<void> logout(BuildContext context, String token) async {
     final response = await http.post(
       Uri.parse(
-          'https://cyan-dust-star.glitch.me/api/logout'), // Replace with your API URL
+          'http://127.0.0.1:8097/api/logout'), // Replace with your API URL
       headers: {
         'Authorization': 'Bearer $token',
       },

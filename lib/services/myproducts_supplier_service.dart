@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MyproductsSupplierService {
   static const String baseUrl =
-      'https://cyan-dust-star.glitch.me'; // Replace with your backend URL
+      'http://127.0.0.1:8097'; // Replace with your backend URL
 
   /// Fetches the products for the authenticated supplier
   Future<List<Product>> getMyProducts() async {

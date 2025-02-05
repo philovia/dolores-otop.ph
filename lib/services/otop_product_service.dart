@@ -4,8 +4,8 @@ import 'package:otop_front/models/otop_models.dart';
 import 'package:otop_front/models/sold_items_model.dart';
 
 class OtopProductServiceAdmin {
-  static const String baseUrl = 'https://cyan-dust-star.glitch.me/otop';
-  static const String otopUrl = 'https://cyan-dust-star.glitch.me/api/otop';
+  static const String baseUrl = 'http://127.0.0.1:8097/otop';
+  static const String otopUrl = 'http://127.0.0.1:8097/api/otop';
 
   static Future<void> checkout(Map<String, dynamic> data) async {
     final url = Uri.parse('$otopUrl/POS');

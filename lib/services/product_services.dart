@@ -5,8 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 class ProductServices {
-  final String baseUrl =
-      'https://cyan-dust-star.glitch.me/api/products/supplier';
+  final String baseUrl = 'http://127.0.0.1:8097/api/products/supplier';
   final Logger _logger = Logger();
 
   Future<List<dynamic>?> getProductsByStore(int supplierId) async {

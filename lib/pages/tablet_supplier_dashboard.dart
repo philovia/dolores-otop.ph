@@ -1,12 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-// import 'package:otop_front/components/add_product_screen.dart';
-import 'package:otop_front/components/order_list.dart';
-// import 'package:otop_front/components/supplier_list.dart';
-import 'package:otop_front/components/transactions.dart';
-// import 'package:otop_front/components/transactions.dart';
+import 'package:otop_front/components/custom_container_salessipplier.dart';
+import 'package:otop_front/components/suppliers_pending_transaction.dart';
+import 'package:otop_front/components/suppliers_verified_transaction.dart';
 import 'package:otop_front/responsive/constant.dart';
-import 'package:otop_front/services/logout_services.dart';
-import 'package:otop_front/widget/custom_container.dart';
+import 'package:otop_front/services/auth_service.dart';
+import 'package:otop_front/widget/supplier_product_listscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TabletSupplierDashboard extends StatefulWidget {
@@ -18,35 +18,30 @@ class TabletSupplierDashboard extends StatefulWidget {
 }
 
 class _TabletSupplierDashboardState extends State<TabletSupplierDashboard> {
-  Widget _currentWidget = OrderList();
-  // Instance of AuthService
+  Widget _currentWidget = SupplierProductListscreen();
   final AuthService _authService = AuthService();
+  bool _isSidebarVisible = true; // Sidebar visibility
 
-  // Function to handle logout
   Future<void> _logout() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token'); // Retrieve your token here
+    final String? token = prefs.getString('token');
 
-    try {
-      // Call the logout method with context and token
-      // ignore: use_build_context_synchronously
-      await _authService.logout(context, token!);
-
-      // Check if the widget is still mounted before using context
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/login'); // Navigate to login
-      }
-    } catch (e) {
-      // Check if the widget is still mounted before showing a Snackbar
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+    if (token != null) {
+      try {
+        await _authService.logout(context, token);
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed('/login');
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())),
+          );
+        }
       }
     }
   }
 
-  // Function to show confirmation dialog before logout
   void _showLogoutConfirmationDialog() {
     showDialog(
       context: context,
@@ -57,14 +52,14 @@ class _TabletSupplierDashboardState extends State<TabletSupplierDashboard> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                _logout(); // Call the logout function
+                Navigator.of(context).pop();
+                _logout();
               },
               child: Text('Yes'),
             ),
@@ -85,111 +80,139 @@ class _TabletSupplierDashboardState extends State<TabletSupplierDashboard> {
             preferredSize: Size.fromHeight(90),
             child: AppBar(
               elevation: 0,
-              backgroundColor: Color.fromARGB(255, 16, 136, 165),
-              title: Stack(
-                children: [
-                  Center(
-                    child: Text(
-                      'SUPPLIER DASHBOARD',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+              title: LayoutBuilder(builder: (context, constraints) {
+                return Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.menu, color: Colors.white),
+                      onPressed: () {
+                        setState(() {
+                          _isSidebarVisible = !_isSidebarVisible;
+                        });
+                      },
                     ),
-                  ),
-                  Positioned(
-                    // left: 0,
-                    child: Image.asset(
+                    Image.asset(
                       'images/otopph.png',
                       height: 50,
                       width: 50,
                     ),
-                  ),
-                ],
-              ),
+                    SizedBox(width: constraints.maxWidth > 800 ? 575 : 20),
+                    Flexible(
+                      child: Text(
+                        'SUPPLIER DASHBOARD',
+                        style: TextStyle(
+                          fontSize: constraints.maxWidth > 800 ? 18 : 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                );
+              }),
+              backgroundColor: Color.fromARGB(255, 16, 136, 165),
             ),
           ),
           // Main content
           Expanded(
             child: Row(
               children: [
-                // Sidebar
-                Container(
-                  width: 200,
-                  color: Color.fromARGB(255, 16, 136, 165),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 10),
-                      ListTile(
-                        leading: Icon(Icons.home),
-                        title: Text(
-                          'On Sales',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            // _currentWidget = AddProductScreen();
-                          });
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.shopping_bag),
-                        title: Text(
-                          'Orders',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _currentWidget = OrderList();
-                          });
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.add_box),
-                        title: Text(
-                          'Transactions',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _currentWidget = MyTransaction();
-                          }); // Uncomment and add your logic
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.add_box),
-                        title: Text(
-                          'On Sales',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _currentWidget = CustomContainer();
-                          });
-                        },
-                      ),
-                      Spacer(),
-                      ListTile(
-                        leading: Icon(Icons.logout),
-                        title: Text(
-                          'Logout',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        onTap: _showLogoutConfirmationDialog,
-                      ),
-                    ],
-                  ),
+                // Sidebar (with animation)
+                AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  width: _isSidebarVisible ? 200 : 0,
+                  color: Color.fromARGB(255, 22, 141, 170),
+                  child: _isSidebarVisible
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 10),
+                            ListTile(
+                              leading: Icon(Icons.home, color: Colors.white),
+                              title: Text(
+                                'My Product',
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.white),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _currentWidget = SupplierProductListscreen();
+                                });
+                              },
+                            ),
+                            Divider(color: Color.fromARGB(207, 88, 86, 86)),
+                            ListTile(
+                              leading:
+                                  Icon(Icons.shopping_bag, color: Colors.white),
+                              title: Text(
+                                'Orders',
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.white),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _currentWidget =
+                                      SuppliersPendingTransaction();
+                                });
+                              },
+                            ),
+                            Divider(color: Color.fromARGB(207, 88, 86, 86)),
+                            ListTile(
+                              leading: Icon(Icons.add_box, color: Colors.white),
+                              title: Text(
+                                'Transaction History',
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.white),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _currentWidget =
+                                      SuppliersVerifiedTransaction();
+                                });
+                              },
+                            ),
+                            Divider(color: Color.fromARGB(207, 110, 104, 104)),
+                            ListTile(
+                              leading: Icon(Icons.shopping_bag_rounded,
+                                  color: Colors.white),
+                              title: Text(
+                                'Sales',
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.white),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _currentWidget =
+                                      CustomContainerSalessipplier();
+                                });
+                              },
+                            ),
+                            Spacer(),
+                            ListTile(
+                              leading: Icon(Icons.logout, color: Colors.white),
+                              title: Text(
+                                'Logout',
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.white),
+                              ),
+                              onTap: _showLogoutConfirmationDialog,
+                            ),
+                          ],
+                        )
+                      : null,
                 ),
                 // Main content area
                 Expanded(
                   child: Center(
                     child: Container(
-                      constraints: const BoxConstraints(maxWidth: 1100),
+                      constraints: const BoxConstraints(maxWidth: 1700),
                       padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.0),
+                          topRight: Radius.circular(20.0),
+                        ),
                       ),
                       child: Align(
                         alignment: Alignment.center,
