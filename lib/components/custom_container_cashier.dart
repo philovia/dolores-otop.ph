@@ -22,6 +22,7 @@ class CustomContainerCashier extends StatelessWidget {
     }
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(255, 197, 192, 192),
         title: Center(
             child: Text('Purchase Product', style: TextStyle(fontSize: 18))),

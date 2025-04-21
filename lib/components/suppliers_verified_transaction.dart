@@ -14,6 +14,7 @@ class SuppliersVerifiedTransaction extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Row(
             children: [
               Center(child: Text('Purchases')),

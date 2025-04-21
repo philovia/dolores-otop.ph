@@ -3,18 +3,11 @@ import 'package:otop_front/components/auth.dart';
 import 'package:otop_front/pages/desktop_admin_dashboard.dart';
 import 'package:otop_front/pages/desktop_cashier_dashboard.dart';
 import 'package:otop_front/pages/desktop_supplier_dashboard.dart';
-import 'package:otop_front/pages/mobile_admin_dashboard.dart';
-import 'package:otop_front/pages/mobile_cashier_dashboard.dart';
-import 'package:otop_front/pages/mobile_supplier_dashboard.dart';
 import 'package:otop_front/pages/responsive_dashboard_cashier.dart';
 import 'package:otop_front/pages/responsive_dashboard_layout.dart';
 import 'package:otop_front/pages/responsive_dashboard_supplier.dart';
-import 'package:otop_front/pages/tablet_admin_dashboard.dart';
-import 'package:otop_front/pages/tablet_cashier_dashboard.dart';
-import 'package:otop_front/pages/tablet_supplier_dashboard.dart';
 import 'package:otop_front/providers/cart_provider.dart';
 import 'package:otop_front/providers/product_provider.dart';
-// import 'package:otop_front/widget/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -39,18 +32,12 @@ class MyApp extends StatelessWidget {
         routes: {
           '/login': (context) => const AuthForm(),
           '/admin': (context) => const ResponsiveDashboardLayout(
-                mobileAdminDashboard: MobileAdminDashboard(),
-                tabletAdminDashboard: TabletAdminDashboard(),
                 desktopAdminDashboard: DesktopAdminDashboard(),
               ),
           '/cashier': (context) => const ResponsiveDashboardCashier(
-                mobileCashierDashboard: MobileCashierDashboard(),
-                tabletCashierDashboard: TabletCashierDashboard(),
                 desktopCashierDashboard: DesktopCashierDashboard(),
               ),
           '/supplier': (context) => const ResponsiveDashboardSupplier(
-                mobileSupplierDashboard: MobileSupplierDashboard(),
-                tabletSupplierDashboard: TabletSupplierDashboard(),
                 desktopSupplierDashboard: DesktopSupplierDashboard(),
               ),
         },

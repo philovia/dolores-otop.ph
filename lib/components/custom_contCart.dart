@@ -13,6 +13,7 @@ class CustomContcart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(186, 198, 228, 237),
         title: Column(
           children: [

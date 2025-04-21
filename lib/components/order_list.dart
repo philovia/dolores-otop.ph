@@ -7,6 +7,7 @@ class OrderList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'ALL ORDERS',
           style: TextStyle(fontSize: 18),

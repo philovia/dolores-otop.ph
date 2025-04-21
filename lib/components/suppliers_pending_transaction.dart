@@ -14,6 +14,7 @@ class SuppliersPendingTransaction extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Center(child: Text('Purchases')),
         ),
         body: FutureBuilder<List<Transaction>>(

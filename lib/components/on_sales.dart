@@ -20,6 +20,7 @@ class _OnSalesState extends State<OnSales> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('On Sales', style: TextStyle(fontSize: 18)),
         centerTitle: true,
         actions: [

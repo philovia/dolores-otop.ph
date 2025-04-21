@@ -7,6 +7,7 @@ class SupplierList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('ALL SUPPLIERS', style: TextStyle(fontSize: 18)),
         centerTitle: true,
       ),

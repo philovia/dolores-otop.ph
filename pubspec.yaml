@@ -50,6 +50,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   intl: ^0.20.1
   dropdown_button2: ^2.3.9
+  layout: ^1.0.5
 
 dev_dependencies:
   flutter_test:

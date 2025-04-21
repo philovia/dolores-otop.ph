@@ -17,6 +17,7 @@ class _ReportListState extends State<ReportList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('DAILY REPORTS', style: TextStyle(fontSize: 18)),
         centerTitle: true,
         actions: [

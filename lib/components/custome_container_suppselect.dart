@@ -22,6 +22,7 @@ class CustomContainerSupselect extends StatelessWidget {
     // }
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(186, 198, 228, 237),
         title: Column(
           children: [
