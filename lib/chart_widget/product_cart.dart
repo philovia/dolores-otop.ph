@@ -166,11 +166,24 @@ class _ProductCardState extends State<ProductCard> {
               widget.product.name,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18.0,
+                fontSize: 15.0,
               ),
             ),
-            const SizedBox(height: 5),
-            // Price, Quantity Buttons, and Add Button in a Row
+            // const SizedBox(height: 5),
+            Text(
+              widget.product.id.toString(),
+              style: const TextStyle(
+                // fontWeight: FontWeight.bol
+                fontSize: 13.0,
+              ),
+            ),
+            Text(
+              widget.product.description,
+              style: const TextStyle(
+                // fontWeight: FontWeight.bol
+                fontSize: 13.0,
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

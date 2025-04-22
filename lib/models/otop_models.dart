@@ -27,7 +27,7 @@ class OtopProduct {
     print('API Response JSON: $json'); // Log the raw response
 
     return OtopProduct(
-      id: json['product_id'] ?? 0,
+      id: json['id'] ?? 0,
       name: json['name'] ?? '',
       description: json['description'] ?? '',
       price: (json['price'] ?? 0).toDouble(),

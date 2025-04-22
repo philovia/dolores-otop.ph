@@ -13,15 +13,15 @@ class CartProvider extends ChangeNotifier {
 
   // Add product to the cart or update quantity if it already exists
   void addProduct(OtopProduct product, int quantity) {
-    if (product.id <= 0 || product.supplierId <= 0) {
+    if (product.id <= 0 || product.quantity <= 0) {
       _logWarning(
-          'Invalid product or supplier ID. Product: ${product.id}, Supplier: ${product.supplierId}');
+          'Invalid product or supplier ID. Product: ${product.id}, Supplier: ${product.quantity}');
       return;
     }
 
     // Check if product already exists in the cart
     final existingProductIndex = _cartItems.indexWhere((item) =>
-        item['id'] == product.id && item['supplierId'] == product.supplierId);
+        item['product_id'] == product.id && item['quantity'] == product.quantity);
 
     if (existingProductIndex != -1) {
       // Update quantity of the existing product
@@ -35,9 +35,9 @@ class CartProvider extends ChangeNotifier {
         'name': product.name,
         'price': product.price,
         'quantity': quantity,
-        'supplierId': product.supplierId,
+        'supplier_id': product.supplierId,
       });
-      _logInfo('Added product to cart: ${product.name}, Quantity: $quantity');
+      _logInfo('Added Quantity: $quantity, ID: ${product.id}' );
     }
     notifyListeners();
   }
@@ -45,7 +45,7 @@ class CartProvider extends ChangeNotifier {
   // Remove a product from the cart
   void removeProduct(int productId, int supplierId) {
     _cartItems.removeWhere(
-        (item) => item['id'] == productId && item['supplierId'] == supplierId);
+            (item) => item['id'] == productId && item['supplier_id'] == supplierId);
     _logInfo('Removed product with ID: $productId from the cart');
     notifyListeners();
   }
@@ -53,7 +53,7 @@ class CartProvider extends ChangeNotifier {
   // Update the quantity of a specific product
   void updateQuantity(int productId, int supplierId, int quantity) {
     final productIndex = _cartItems.indexWhere(
-        (item) => item['id'] == productId && item['supplierId'] == supplierId);
+        (item) => item['id'] == productId && item['supplier_id'] == supplierId);
 
     if (productIndex != -1) {
       if (quantity <= 0) {
