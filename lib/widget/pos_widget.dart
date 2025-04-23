@@ -7,6 +7,7 @@ import 'package:otop_front/models/otop_models.dart';
 import 'package:otop_front/services/otop_product_service.dart';
 import 'package:otop_front/providers/cart_provider.dart';
 import '../chart_widget/product_cart.dart';
+import 'package:flutter/services.dart';
 
 class ProductCheckoutWidget extends StatelessWidget {
   const ProductCheckoutWidget({super.key});
@@ -55,16 +56,33 @@ class _ProductListState extends State<ProductList> {
     super.dispose();
   }
 
+  // Normalize category: remove quotes, trim, and convert to lowercase
+  String normalizeCategory(String category) {
+    return category.replaceAll('"', '').trim().toLowerCase();
+  }
+
   void _filterProducts(String query) {
     setState(() {
       _filteredProducts = _allProducts.where((product) {
         return product.name.toLowerCase().contains(query.toLowerCase());
       }).toList();
+
+      for (var product in _filteredProducts) {
+        print('Filtered Product: ${product.name}, Category raw: ${product.category}');
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    List<OtopProduct> foodProducts = _filteredProducts
+        .where((product) => normalizeCategory(product.category) == 'food')
+        .toList();
+
+    List<OtopProduct> nonFoodProducts = _filteredProducts
+        .where((product) => normalizeCategory(product.category) == 'non-food')
+        .toList();
+
     return Column(
       children: [
         Padding(
@@ -93,23 +111,64 @@ class _ProductListState extends State<ProductList> {
                 return const Center(child: Text('No products found'));
               }
 
-              return ListView.builder(
-                itemCount: _filteredProducts.length,
-                itemBuilder: (context, index) {
-                  final product = _filteredProducts[index];
-                  return ProductCard(
-                    product: product,
-                    onAdd: (quantity) {
-                      Provider.of<CartProvider>(context, listen: false)
-                          .addProduct(product, quantity);
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   SnackBar(
-                      //     content: Text('${product.name} (x$quantity) added!'),
-                      //   ),
-                      // );
-                    },
-                  );
-                },
+              return Row(
+                children: [
+                  /// Food Column
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text("Food", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: foodProducts.length,
+                            itemBuilder: (context, index) {
+                              final product = foodProducts[index];
+                              return ProductCard(
+                                product: product,
+                                onAdd: (quantity) {
+                                  Provider.of<CartProvider>(context, listen: false)
+                                      .addProduct(product, quantity);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  /// Non-Food Column
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text("Non-Food", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: nonFoodProducts.length,
+                            itemBuilder: (context, index) {
+                              final product = nonFoodProducts[index];
+                              return ProductCard(
+                                product: product,
+                                onAdd: (quantity) {
+                                  Provider.of<CartProvider>(context, listen: false)
+                                      .addProduct(product, quantity);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               );
             },
           ),
@@ -118,6 +177,7 @@ class _ProductListState extends State<ProductList> {
     );
   }
 }
+
 class ProductCard extends StatefulWidget {
   final OtopProduct product;
   final void Function(int quantity) onAdd;
@@ -215,6 +275,13 @@ class _ProductCardState extends State<ProductCard> {
                 fontSize: 13.0,
               ),
             ),
+            Text(
+              widget.product.category,
+              style: const TextStyle(
+                // fontWeight: FontWeight.bol
+                fontSize: 13.0,
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -240,7 +307,7 @@ class _ProductCardState extends State<ProductCard> {
                         onChanged: _updateQuantity,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(vertical: 5),
+                          // contentPadding: EdgeInsets.symmetric(vertical: 5),
                         ),
                       ),
                     ),
@@ -293,27 +360,38 @@ class _CheckoutSectionState extends State<CheckoutSection> {
     super.dispose();
   }
 
+  void printReceipt() {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
+    debugPrint('-------- RECEIPT --------');
+    for (var item in cartProvider.cartItems) {
+      debugPrint('${item['name']} x ${item['quantity']} = ₱${(item['price'] * item['quantity']).toStringAsFixed(2)}');
+    }
+    debugPrint('-------------------------');
+    debugPrint('TOTAL: ₱${cartProvider.total.toStringAsFixed(2)}');
+    debugPrint('RECEIVED: ₱${received.toStringAsFixed(2)}');
+    debugPrint('CHANGE: ₱${change.toStringAsFixed(2)}');
+    debugPrint('-------------------------');
+  }
+
 
   Future<void> completeCheckout() async {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
 
-    // PRINTING CART ITEMS
-    debugPrint("Printing cart items...");
-    for (var item in cartProvider.cartItems) {
-      debugPrint('Product: ${item['name']}, '
-          'ID: ${item['id']}, '
-          'Supplier ID: ${item['supplier_id']}, '
-          'Quantity: ${item['quantity']}, '
-          'Price: ₱${item['price']}, '
-          'Subtotal: ₱${(item['price'] * item['quantity']).toStringAsFixed(2)}');
-    }
-    // PRINTING CART ITEMS
-    debugPrint("Printing cart items...");
-    debugPrint('CASH RECEIVED: ₱${received.toStringAsFixed(2)}');
-    debugPrint('CHANGE: ₱${change.toStringAsFixed(2)}');
-
-    // Print total bill
-    debugPrint('TOTAL BILL: ₱${cartProvider.total.toStringAsFixed(2)}');
+    // // PRINTING CART ITEMS
+    // debugPrint("Printing cart items...");
+    // for (var item in cartProvider.cartItems) {
+    //   debugPrint('Product: ${item['name']}, '
+    //       'ID: ${item['id']}, '
+    //       'Supplier ID: ${item['supplier_id']}, '
+    //       'Quantity: ${item['quantity']}, '
+    //       'Price: ₱${item['price']}, '
+    //       'Subtotal: ₱${(item['price'] * item['quantity']).toStringAsFixed(2)}');
+    // }
+    //
+    // debugPrint('CASH RECEIVED: ₱${received.toStringAsFixed(2)}');
+    // debugPrint('CHANGE: ₱${change.toStringAsFixed(2)}');
+    // debugPrint('TOTAL BILL: ₱${cartProvider.total.toStringAsFixed(2)}');
 
     try {
       for (var item in cartProvider.cartItems) {
@@ -333,15 +411,40 @@ class _CheckoutSectionState extends State<CheckoutSection> {
         change = 0.00;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Checkout completed successfully!')),
-      );
+      // await showDialog(
+      //   context: context,
+      //   builder: (context) => AlertDialog(
+      //     title: const Text('Success'),
+      //     content: const Text('Checkout completed successfully!'),
+      //     actions: [
+      //       TextButton(
+      //         onPressed: () => Navigator.of(context).pop(),
+      //         child: const Text('Cancel'),
+      //       ),
+      //       TextButton(
+      //         onPressed: () => Navigator.of(context).pop(),
+      //         child: const Text('OK'),
+      //       ),
+      //     ],
+      //   ),
+      // );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error during checkout: $e')),
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: Text('Error during checkout: $e'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
       );
     }
   }
+
 
 
 
@@ -466,6 +569,9 @@ class _CheckoutSectionState extends State<CheckoutSection> {
               TextField(
                 controller: customAmountController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+                ],
                 decoration: const InputDecoration(
                   labelText: 'Enter amount',
                   prefixText: '₱',
@@ -497,9 +603,34 @@ class _CheckoutSectionState extends State<CheckoutSection> {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: ElevatedButton(
-                      onPressed: (cartProvider.cartItems.isNotEmpty && received >= cartProvider.total)
-                          ? completeCheckout
-                          : null,
+                      onPressed: () async {
+                        final shouldProceed = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Confirm Checkout'),
+                            content: const Text('Are you sure you want to complete the checkout?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  printReceipt(); // Print receipt here
+                                  Navigator.of(context).pop(true); // Then proceed with checkout
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (shouldProceed == true) {
+                          await completeCheckout();
+                          // await printReceipt(cartProvider.cartItems, received, change, cartProvider.total);
+
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: (cartProvider.cartItems.isNotEmpty && received >= cartProvider.total)
                             ? Colors.green
