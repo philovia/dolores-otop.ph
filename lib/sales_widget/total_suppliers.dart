@@ -13,29 +13,39 @@ class TotalSalesWidget extends StatefulWidget {
 class _TotalSalesWidgetState extends State<TotalSalesWidget> {
   int? previousSuppliers;
   double percentageChange = 0.0;
+  late Future<int> futureSuppliers;
+
+  @override
+  void initState() {
+    super.initState();
+    futureSuppliers = fetchSupplierData();
+  }
+
+  Future<int> fetchSupplierData() async {
+    final otopService = OtopProductServices();
+    final currentSuppliers = await otopService.getTotalSuppliers();
+
+    if (previousSuppliers != null) {
+      percentageChange = ((currentSuppliers - previousSuppliers!) /
+          previousSuppliers!) *
+          100;
+    }
+    previousSuppliers = currentSuppliers;
+
+    return currentSuppliers;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final otopService = OtopProductServices();
-
     return FutureBuilder<int>(
-      future: otopService.getTotalSuppliers(),
+      future: futureSuppliers,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
-          final currentSuppliers = snapshot.data ?? 0;
-          if (previousSuppliers != null) {
-            // Calculate the percentage change
-            setState(() {
-              percentageChange = ((currentSuppliers - previousSuppliers!) /
-                      previousSuppliers!) *
-                  100;
-            });
-          }
-          previousSuppliers = currentSuppliers;
+          final currentSuppliers = snapshot.data!;
 
           return SizedBox(
             width: 200,
@@ -46,33 +56,31 @@ class _TotalSalesWidgetState extends State<TotalSalesWidget> {
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
                   children: [
-                    // First Row for Icon
                     Row(
                       children: [
-                        SizedBox(width: 20),
-                        Icon(Icons.person_2_rounded,
+                        const SizedBox(width: 15),
+                        const Icon(Icons.person_2_rounded,
                             size: 30, color: Colors.blue),
-                        SizedBox(width: 120),
+                        const SizedBox(width: 120),
                         Text(
-                          '$currentSuppliers', // Display total suppliers
-                          style: TextStyle(
+                          '$currentSuppliers',
+                          style: const TextStyle(
                               fontSize: 15, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        SizedBox(width: 20),
-                        Text(
+                        const SizedBox(width: 20),
+                        const Text(
                           'Suppliers',
                           style: TextStyle(
                               fontSize: 12, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(width: 90),
+                        // const SizedBox(width: 90),
                         // Text(
-                        //   // Display percentage change
                         //   '${percentageChange.toStringAsFixed(2)}%',
                         //   style: TextStyle(
                         //       color: percentageChange >= 0
@@ -88,7 +96,7 @@ class _TotalSalesWidgetState extends State<TotalSalesWidget> {
           );
         }
 
-        return SizedBox(); // Return an empty widget if no data
+        return const SizedBox();
       },
     );
   }

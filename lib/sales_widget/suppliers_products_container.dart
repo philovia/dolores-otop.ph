@@ -19,7 +19,7 @@ class DeviceTypeWidget extends StatelessWidget {
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
             Container(
-              height: 100,
+              height: 110,
               color: Colors.grey[200],
               child: StoreProductTable(),
             ),

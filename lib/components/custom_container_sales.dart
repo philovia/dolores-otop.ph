@@ -25,11 +25,11 @@ class CustomContainerSales extends StatelessWidget {
                   color: const Color.fromARGB(255, 250, 106, 3))),
         ],
       )),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(10.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Row: Metrics
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: const [
@@ -44,13 +44,11 @@ class CustomContainerSales extends StatelessWidget {
               children: const [
                 Expanded(child: SpendByChannelWidget()),
                 Expanded(child: ResonanceScoreWidget()),
-                // ResonanceScoreWidget(),
               ],
             ),
             SizedBox(height: 10),
             Row(
               children: const [
-                // Expanded(child: ContextualWidget()),
                 Expanded(child: DeviceTypeWidget()),
                 Expanded(child: ImpressionMeasurementWidget()),
               ],

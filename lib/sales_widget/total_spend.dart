@@ -45,18 +45,18 @@ class _TotalSpendWidgetState extends State<TotalSpendWidget> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 200,
-      height: 100,
       child: Card(
         surfaceTintColor: Colors.redAccent,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min, // important
             children: [
               Row(
                 children: [
                   const Icon(Icons.analytics_outlined,
                       size: 30, color: Colors.blue),
-                  const SizedBox(width: 120),
+                  const Spacer(),
                   _isLoading
                       ? const CircularProgressIndicator(strokeWidth: 2)
                       : Text(
@@ -73,8 +73,6 @@ class _TotalSpendWidgetState extends State<TotalSpendWidget> {
                   Text('Sales',
                       style:
                       TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                  SizedBox(width: 90),
-                  // Text('+33.45%', style: TextStyle(color: Colors.green)),
                 ],
               ),
             ],
