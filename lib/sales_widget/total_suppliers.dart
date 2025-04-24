@@ -71,14 +71,14 @@ class _TotalSalesWidgetState extends State<TotalSalesWidget> {
                               fontSize: 12, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 90),
-                        Text(
-                          // Display percentage change
-                          '${percentageChange.toStringAsFixed(2)}%',
-                          style: TextStyle(
-                              color: percentageChange >= 0
-                                  ? Colors.green
-                                  : Colors.red),
-                        ),
+                        // Text(
+                        //   // Display percentage change
+                        //   '${percentageChange.toStringAsFixed(2)}%',
+                        //   style: TextStyle(
+                        //       color: percentageChange >= 0
+                        //           ? Colors.green
+                        //           : Colors.red),
+                        // ),
                       ],
                     ),
                   ],

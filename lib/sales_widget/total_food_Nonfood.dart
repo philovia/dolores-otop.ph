@@ -80,21 +80,21 @@ class ViewableImpressionsWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(width: 25),
-                        Text(
-                          'Percent:',
-                          style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(width: 80),
-                        Text(
-                          '${percentageChange.toStringAsFixed(2)}%',
-                          style: TextStyle(
-                              color: percentageChange >= 0
-                                  ? Colors.green
-                                  : Colors.red,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
-                        ),
+                        // Text(
+                        //   'Percent:',
+                        //   style: TextStyle(
+                        //       fontSize: 10, fontWeight: FontWeight.bold),
+                        // ),
+                        // SizedBox(width: 80),
+                        // Text(
+                        //   '${percentageChange.toStringAsFixed(2)}%',
+                        //   style: TextStyle(
+                        //       color: percentageChange >= 0
+                        //           ? Colors.green
+                        //           : Colors.red,
+                        //       fontSize: 14,
+                        //       fontWeight: FontWeight.bold),
+                        // ),
                       ],
                     ),
                   ],

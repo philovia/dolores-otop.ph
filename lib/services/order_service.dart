@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
+import '../models/sold_items_model.dart';
+
 class OrderService {
   final String baseUrl = 'http://127.0.0.1:8097/order';
   final Logger _logger = Logger();
@@ -32,6 +34,29 @@ class OrderService {
     }
     return null;
   }
+
+  Future<Map<String, dynamic>> getAllSoldItems() async {
+    final url = Uri.parse('http://127.0.0.1:8097/api/otop/solds_products'); // replace with your actual endpoint
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return (data['overall_amount_sold'] ?? 0).toDouble();
+    } else {
+      throw Exception('Failed to load overall amount sold');
+    }
+  }
+
+  // this is how to fetch the overallAmuntSold
+
+  // void fetchTotalSoldAmount() async {
+  //   try {
+  //     double total = await getOverallAmountSoldOnly();
+  //     print('Overall amount sold: ₱$total');
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
 
   Future<List<dynamic>?> fetchOrders() async {
     try {

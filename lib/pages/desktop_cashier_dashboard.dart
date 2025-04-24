@@ -8,6 +8,7 @@ import 'package:otop_front/widget/product_list_otopcashier.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../chart_widget/receipts_widget_display.dart';
 import '../services/auth_service.dart';
 
 class DesktopCashierDashboard extends StatefulWidget {
@@ -162,7 +163,7 @@ class _DesktopCashierDashboardState extends State<DesktopCashierDashboard> {
                         ),
                         onTap: () {
                           setState(() {
-                            // _currentWidget = ReceiptsDisplay(receipts: receipts)
+                            _currentWidget = ReceiptsDisplay();
                           });
                         },
                       ),
@@ -417,7 +418,7 @@ class _DesktopCashierDashboardState extends State<DesktopCashierDashboard> {
                             ),
                             onTap: () {
                               setState(() {
-                                // _currentWidget = ReceiptsDisplay(receipts: receipts)
+                                _currentWidget = ReceiptsDisplay();
                               });
                             },
                           ),

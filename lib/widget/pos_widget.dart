@@ -1,4 +1,5 @@
 // import 'dart:convert';
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/material.dart';
 import 'package:otop_front/services/solds_products_services.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,9 @@ import 'package:otop_front/services/otop_product_service.dart';
 import 'package:otop_front/providers/cart_provider.dart';
 import '../chart_widget/product_cart.dart';
 import 'package:flutter/services.dart';
+
+import '../models/receipt_model.dart';
+import '../providers/receipts_provider.dart';
 
 class ProductCheckoutWidget extends StatelessWidget {
   const ProductCheckoutWidget({super.key});
@@ -360,6 +364,33 @@ class _CheckoutSectionState extends State<CheckoutSection> {
     super.dispose();
   }
 
+  void printReceiptBluetooth() async {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    BlueThermalPrinter printer = BlueThermalPrinter.instance;
+
+    // Check connection
+    bool isConnected = await printer.isConnected ?? false;
+    if (!isConnected) {
+      // Attempt to reconnect or notify user
+      debugPrint("Printer is not connected.");
+      return;
+    }
+
+    printer.printCustom("OTOP RECEIPT", 3, 1);
+    for (var item in cartProvider.cartItems) {
+      printer.printCustom("${item['name']} x${item['quantity']}", 1, 0);
+      printer.printCustom("₱${(item['price'] * item['quantity']).toStringAsFixed(2)}", 1, 2);
+    }
+
+    printer.printNewLine();
+    printer.printCustom("TOTAL: ₱${cartProvider.total.toStringAsFixed(2)}", 2, 1);
+    printer.printCustom("RECEIVED: ₱${received.toStringAsFixed(2)}", 1, 1);
+    printer.printCustom("CHANGE: ₱${change.toStringAsFixed(2)}", 1, 1);
+    printer.printNewLine();
+    printer.printNewLine();
+  }
+
+
   void printReceipt() {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
 
@@ -377,6 +408,7 @@ class _CheckoutSectionState extends State<CheckoutSection> {
 
   Future<void> completeCheckout() async {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final receiptProvider = Provider.of<ReceiptProvider>(context, listen: false);
 
     // // PRINTING CART ITEMS
     // debugPrint("Printing cart items...");
@@ -404,6 +436,16 @@ class _CheckoutSectionState extends State<CheckoutSection> {
 
         await recordSoldItems(productId, quantitySold);
       }
+
+      receiptProvider.addReceipt(
+        Receipt(
+          items: List<Map<String, dynamic>>.from(cartProvider.cartItems),
+          total: cartProvider.total,
+          received: received,
+          change: change,
+          timestamp: DateTime.now(),
+        ),
+      );
 
       cartProvider.clearCart();
       setState(() {
@@ -617,6 +659,7 @@ class _CheckoutSectionState extends State<CheckoutSection> {
                               TextButton(
                                 onPressed: () {
                                   printReceipt(); // Print receipt here
+                                  printReceiptBluetooth();
                                   Navigator.of(context).pop(true); // Then proceed with checkout
                                 },
                                 child: const Text('OK'),

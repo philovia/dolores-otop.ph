@@ -57,10 +57,10 @@ class TotalImpressionsWidget extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 90),
-                        Text(
-                          '${percentageChange.toStringAsFixed(2)}%',
-                          style: TextStyle(color: percentageColor),
-                        ),
+                        // Text(
+                        //   '${percentageChange.toStringAsFixed(2)}%',
+                        //   style: TextStyle(color: percentageColor),
+                        // ),
                       ],
                     ),
                   ],

@@ -8,6 +8,7 @@ import 'package:otop_front/pages/responsive_dashboard_layout.dart';
 import 'package:otop_front/pages/responsive_dashboard_supplier.dart';
 import 'package:otop_front/providers/cart_provider.dart';
 import 'package:otop_front/providers/product_provider.dart';
+import 'package:otop_front/providers/receipts_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -24,6 +25,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductProvider()),
         ChangeNotifierProvider(
             create: (_) => CartProvider()), // Add CartProvider here
+        ChangeNotifierProvider(
+          create: (_) => ReceiptProvider(),
+        ),
+
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

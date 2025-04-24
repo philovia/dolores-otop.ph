@@ -1,7 +1,45 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class TotalSpendWidget extends StatelessWidget {
+class TotalSpendWidget extends StatefulWidget {
   const TotalSpendWidget({super.key});
+
+  @override
+  State<TotalSpendWidget> createState() => _TotalSpendWidgetState();
+}
+
+class _TotalSpendWidgetState extends State<TotalSpendWidget> {
+  double _sales = 0.0;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchOverallAmountSold();
+  }
+
+  Future<void> _fetchOverallAmountSold() async {
+    try {
+      final url = Uri.parse('http://127.0.0.1:8097/api/otop/solds_products'); // Replace with actual endpoint
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _sales = data['overall_amount_sold']?.toDouble() ?? 0.0;
+          _isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to fetch sales');
+      }
+    } catch (e) {
+      print('Error fetching sales: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,26 +52,29 @@ class TotalSpendWidget extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // First Row for Icon
               Row(
                 children: [
-                  Icon(Icons.analytics_outlined, size: 30, color: Colors.blue),
-                  SizedBox(width: 120),
-                  Text('₱50, 000.00',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  const Icon(Icons.analytics_outlined,
+                      size: 30, color: Colors.blue),
+                  const SizedBox(width: 120),
+                  _isLoading
+                      ? const CircularProgressIndicator(strokeWidth: 2)
+                      : Text(
+                    '₱${_sales.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
-              SizedBox(height: 8),
-
-              Row(
+              const SizedBox(height: 8),
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text('Sales',
                       style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                      TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                   SizedBox(width: 90),
-                  Text('+33.45%', style: TextStyle(color: Colors.green)),
+                  // Text('+33.45%', style: TextStyle(color: Colors.green)),
                 ],
               ),
             ],
@@ -42,12 +83,4 @@ class TotalSpendWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: Scaffold(
-      body: Center(child: TotalSpendWidget()),
-    ),
-  ));
 }
