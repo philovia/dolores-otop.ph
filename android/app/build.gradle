@@ -6,9 +6,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.otop_front"
+//    namespace = "com.example.otop_front"
+    namespace 'com.example.otop_front'
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+    namespace 'com.blue.thermal_printer' // ✅ This is what fixes the error
+    compileSdkVersion 33
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -28,6 +31,8 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        minSdkVersion 21
+        targetSdkVersion 33
     }
 
     buildTypes {

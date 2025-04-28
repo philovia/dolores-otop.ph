@@ -97,6 +97,7 @@ class _SalesInventoryPageState extends State<SalesInventoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Sales Inventory'),
         backgroundColor: const Color.fromARGB(255, 255, 200, 123),
       ),

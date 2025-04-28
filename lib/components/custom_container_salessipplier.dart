@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:otop_front/sales_widget/spend_by_widget.dart';
+
+import '../sales_widget/suppliers_sales_chart.dart';
 // import 'package:otop_front/sales_widget/categories_widget.dart';
 // import 'package:otop_front/sales_widget/outstanding_supplier_chart.dart';
 // import 'package:otop_front/sales_widget/suppliers_products_container.dart';
@@ -33,7 +35,7 @@ class CustomContainerSalessipplier extends StatelessWidget {
             SizedBox(height: 10),
             Row(
               children: const [
-                Expanded(child: SpendByChannelWidget()), // Only include SpendByChannelWidget here
+                Expanded(child: SuppliersSalesChart(supplierId: '',)), // Only include SpendByChannelWidget here
               ],
             ),
             SizedBox(height: 10),

@@ -2,27 +2,50 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:otop_front/chart_widget/chart_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class SpendByChannelWidget extends StatefulWidget {
-  const SpendByChannelWidget({super.key});
+class SuppliersSalesChart extends StatefulWidget {
+  final String supplierId;
+
+  const SuppliersSalesChart({super.key, required this.supplierId});
 
   @override
-  State<SpendByChannelWidget> createState() => _SpendByChannelWidgetState();
+  State<SuppliersSalesChart> createState() => _SuppliersSalesChartState();
 }
 
-class _SpendByChannelWidgetState extends State<SpendByChannelWidget> {
+class _SuppliersSalesChartState extends State<SuppliersSalesChart> {
   String selectedPeriod = 'Daily'; // Default selection
   final List<String> periods = ['Daily', 'Weekly', 'Monthly', 'Yearly']; // Added 'Monthly'
   List<double> chartData = []; // To store the chart data
+  String supplierId = ''; // Assuming supplierId is assigned after login
 
   @override
   void initState() {
     super.initState();
     fetchSalesData(); // Fetch the data when the widget is initialized
+    loadSupplierId();
+  }
+
+  Future<void> loadSupplierId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    supplierId = prefs.getString('supplierId') ?? '';
+
+    if (supplierId.isEmpty) {
+      print('Supplier ID not found in SharedPreferences');
+    } else {
+      print('Supplier ID loaded: $supplierId');
+      fetchSalesData(); // Now fetch sales data AFTER supplierId is loaded
+    }
   }
 
   // Function to fetch sales data based on selected period
   Future<void> fetchSalesData() async {
+    if (supplierId.isEmpty) {
+      // Handle error if no supplierId is found
+      print('Supplier ID is missing');
+      return;
+    }
+
     String interval = 'daily';
     if (selectedPeriod == 'Weekly') {
       interval = 'weekly';
@@ -38,7 +61,10 @@ class _SpendByChannelWidgetState extends State<SpendByChannelWidget> {
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({'interval': interval}),
+        body: jsonEncode({
+          'supplierId': supplierId, // Include supplierId in the request
+          'interval': interval,
+        }),
       );
 
       if (response.statusCode == 200) {
@@ -148,76 +174,76 @@ class _SpendByChannelWidgetState extends State<SpendByChannelWidget> {
                   children: [
                     // Scrollable horizontal labels
                     SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: selectedPeriod == 'Daily'
-                            ? ['']
-                            .map((label) => Container(
-                          width: 60,
-                          child: Center(
-                            child: Text(
-                              label,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ))
-                            .toList()
-                            : selectedPeriod == 'Weekly'
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                            children: selectedPeriod == 'Daily'
+                                ? ['']
+                                .map((label) => Container(
+                              width: 60,
+                              child: Center(
+                                child: Text(
+                                  label,
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ))
+                                .toList()
+                                : selectedPeriod == 'Weekly'
                             ? []
-                            .map((label) => Container(
-                          width: 60,
-                          child: Center(
+                                .map((label) => Container(
+                            width: 60,
+                            child: Center(
                             child: Text(
-                              label,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
+                            label,
+                            style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold),
                             ),
-                          ),
-                        ))
-                            .toList()
-                            : selectedPeriod == 'Monthly'
+                            ),
+                            ))
+                                .toList()
+                                : selectedPeriod == 'Monthly'
                             ? []
-                            .map((label) => Container(
-                          width: 60,
-                          child: Center(
+                                .map((label) => Container(
+                            width: 60,
+                            child: Center(
                             child: Text(
-                              label,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
+                            label,
+                            style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold),
                             ),
-                          ),
-                        ))
-                            .toList()
-                            : []
-                            .map((label) => Container(
-                          width: 60,
-                          child: Center(
-                            child: Text(
-                              label,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
                             ),
-                          ),
-                        ))
-                            .toList(),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    BarGraph(
-                      data: chartData,
-                      labels: selectedPeriod == 'Daily'
-                          ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                          : selectedPeriod == 'Weekly'
-                          ? ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5']
-                          : selectedPeriod == 'Monthly'
-                          ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-                          : ['2021', '2022', '2023', '2024', '2025'], // Example yearly labels
-                    ),
+                            ))
+                                .toList()
+                                : []
+                                .map((label) => Container(
+                              width: 60,
+                              child: Center(
+                                child: Text(
+                                  label,
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ))
+                                .toList(),
+                            ),
+                            ),
+                            const SizedBox(height: 10),
+                            BarGraph(
+                              data: chartData,
+                              labels: selectedPeriod == 'Daily'
+                                  ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                                  : selectedPeriod == 'Weekly'
+                                  ? ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5']
+                                  : selectedPeriod == 'Monthly'
+                                  ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                                  : ['2021', '2022', '2023', '2024', '2025'], // Example yearly labels
+                            ),
                   ],
                 ),
               ),
